@@ -24,20 +24,11 @@
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-// gcc remove_noise.c -lrnnoise -o remove_noise
-//rec -c 1 -b 16 -d | ./remove_noise melm.wav mlemm.wav
-//arecord -v  -f S16_LE -c1 -r48000 -t raw | ./remove_noise out.pcm ; sox -t raw -r 48000 -b 16 -c 1 -L -e signed-integer out.pcm out.wav gain -n -3
-
-//arecord -v -f S16_LE -c1 -r48000 -t raw | ./remove_noise out.pcm ; sox -t raw -r 48000 -b 16 -c 1 -L -e signed-integer out.pcm out.wav vol 3 db; sox out.wav -r 16k out_16.wav;/usr/local/bin/pocketsphinx_continuous -logfn /dev/null -infile '/home/shoaib/Desktop/rnnoise/examples/out_16.wav'
-
-//arecord -v -f S16_LE -c1 -r48000 -t raw | sox -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - vol 15 dB | ./remove_noise out.pcm ; sox -t raw -r 48000 -b 16 -c 1 -L -e signed-integer out.pcm out.wav; sox out.wav -r 16k out_16.wav;/usr/local/bin/pocketsphinx_continuous -logfn /dev/null -infile '/home/shoaib/Desktop/rnnoise/examples/out_16.wav'
-
-
-//arecord -v -f S16_LE -c1 -r48000 -t raw | sox -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - vol 15 dB | ./remove_noise out.pcm ;sleep 0.2 ; sox -t raw -r 48000 -b 16 -c 1 -L -e signed-integer out.pcm out.wav; sox out.wav -r 16k out_16.wav;/usr/local/bin/pocketsphinx_continuous -logfn /dev/null -infile '/home/shoaib/Desktop/rnnoise/examples/out_16.wav' > out.txt; cat out.txt
+//arecord -v -f S16_LE -c1 -r48000 -t raw | sox -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - vol 15 dB | ./remove_noise out.pcm ;sleep 0.2 ; sox -t raw -r 48000 -b 16 -c 1 -L -e signed-integer out.pcm out.wav; sox out.wav -r 16k out_16.wav;/usr/local/bin/pocketsphinx_continuous -logfn /dev/null -infile '/PATH/out_16.wav' > out.txt; cat out.txt
 
 
 // arecord -v -f S16_LE -c1 -r48000 -t raw | sox -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - vol 15 dB | ./remove_noise /dev/stdout | sox -t raw -r 48000 -b 16 -c 1 -L -e signed-integer - -r 16k out_16.wav
-// /usr/local/bin/pocketsphinx_continuous -logfn /dev/null -infile '/home/shoaib/Desktop/rnnoise/examples/out_16.wav' > out.txt; cat out.txt
+// /usr/local/bin/pocketsphinx_continuous -logfn /dev/null -infile '/PATH/out_16.wav' > out.txt; cat out.txt
 
 //Pocket_Sphinx 
 //export LD_LIBRARY_PATH=/usr/local/lib 
