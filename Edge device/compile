@@ -1,0 +1,4 @@
+#/bin/bash
+LD_RUN_PATH=/usr/local/lib
+NAME=`echo "$1" | cut -d'.' -f1`
+gcc $1 -L/usr/local/lib -Wl,-rpath -Wl,/usr/local/lib -lrnnoise -o $NAME
