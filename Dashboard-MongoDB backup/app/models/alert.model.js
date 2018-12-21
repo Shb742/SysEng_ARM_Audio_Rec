@@ -4,7 +4,7 @@ const AlertSchema = mongoose.Schema({
 	content: String,
 	type: String,
 	location: String,
-	file: Buffer,
+	file: String,
 	createdAt: { type: Date, expires: '43200m', default: Date.now }
 }, {
 	capped : true,
