@@ -15,7 +15,7 @@ with open(".env") as f:
         env_vars[key] = value # Save to a list
 
 adminToken = env_vars["ADMIN_TOKEN"]
-url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "http://localhost:3000")+"/api/alerts/<replace>?token="+adminToken
+url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "http://localhost:3000")+"/api/alerts/<replace>?file=remove&token="+adminToken
 
 while (1):
 	option = int(raw_input("get(0),getId(1),postFile(2),DeleteID(3),SaveFile(4)"))

@@ -2,7 +2,6 @@ const Alert = require('../models/alert.model.js');
 
 // Create and Save a new Alert
 exports.create = (req, res) => {
-	console.log("create");
 	// Validate request
 	if (res.locals.authlevel > 1){
 		return res.status(400).send({
@@ -40,17 +39,30 @@ exports.create = (req, res) => {
 // Retrieve and return all alerts from the database.
 exports.find = (req, res) => {
 	var Qlimit = parseInt(req.query.limit);
+	var removeFile = req.query.file;
 	if (isNaN(Qlimit)){
 		Qlimit = 10;
 	}
-	Alert.find({}, null, {limit: Qlimit})
-	.then(alerts => {
-		return res.send(alerts);
-	}).catch(err => {
-		return res.status(500).send({
-			message: err.message || "Some error occurred while retrieving alerts."
+	if (removeFile == undefined){
+		Alert.find({}, null, {limit: Qlimit})
+		.then(alerts => {
+			return res.send(alerts);
+		}).catch(err => {
+			return res.status(500).send({
+				message: err.message || "Some error occurred while retrieving alerts."
+			});
 		});
-	});
+	}else{
+		Alert.find({}, null, {limit: Qlimit}).select("-file")
+		.then(alerts => {
+			return res.send(alerts);
+		}).catch(err => {
+			return res.status(500).send({
+				message: err.message || "Some error occurred while retrieving alerts."
+			});
+		});
+	}
+	
 };
 
 // Find a single alert with a alertId
