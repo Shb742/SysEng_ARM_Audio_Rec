@@ -20,6 +20,8 @@ with open(".env") as f:
 
 userName = (env_vars["USERNAME"] if ("USERNAME" in env_vars) else "test")
 password = (env_vars["PASSWORD"] if ("PASSWORD" in env_vars) else "test@test")
+location = (env_vars["LOCATION"] if ("LOCATION" in env_vars) else "UNKWN")
+
 session = requests.Session()
 url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "http://localhost:3000")
 last_login = 0
@@ -65,9 +67,10 @@ def send(data,text):
 	global password
 	global session
 	global url
+	global location
 	#globals*
 	login()
-	post_fields = {'content': json.dumps(text) ,'file':encode_speech(data),'type':'data:audio/wav;base64,'}     # Set POST fields here 
+	post_fields = {'content': json.dumps(text) ,'file':encode_speech(data),'type':'data:audio/wav;base64,', 'location':location}     # Set POST fields here 
 	r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields) 
 	print(r.content)
 

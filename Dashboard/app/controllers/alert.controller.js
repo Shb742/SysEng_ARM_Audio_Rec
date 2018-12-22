@@ -8,7 +8,7 @@ exports.create = (req, res) => {
 			ERROR: 'Not authorized!'
 		});
 	}
-	if(!req.body.content) {
+	if(!req.body.file) {
 		return res.status(400).send({
 			ERROR: "Content can not be empty"
 		});
