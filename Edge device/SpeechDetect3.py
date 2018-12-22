@@ -113,8 +113,8 @@ def run():
 			print("* Finished recording, decoding phrase")
 			r = decode_phrase(list(pre_threshold_audio) + audio2send)
 			if (len(r) > 0 and ( True in [ "help" in x for x in r] )):
-				dashboard.send(list(pre_threshold_audio) + audio2send)
-				stream.read()#get rid of old data
+				dashboard.send((list(pre_threshold_audio) + audio2send),r )
+				stream.read(1024*6)#get rid of old data ~0.01066666667s
 			print("DETECTED: ", r)
 			#Reset all
 			started = False
