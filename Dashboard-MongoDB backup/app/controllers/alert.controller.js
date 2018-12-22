@@ -2,11 +2,16 @@ const Alert = require('../models/alert.model.js');
 
 // Create and Save a new Alert
 exports.create = (req, res) => {
-
+	console.log("create");
 	// Validate request
+	if (res.locals.authlevel > 1){
+		return res.status(400).send({
+			message: 'ERROR : Not authorized!'
+		});
+	}
 	if(!req.body.content) {
 		return res.status(400).send({
-			message: "Note content can not be empty"
+			message: "Content can not be empty"
 		});
 	}
 
@@ -18,14 +23,14 @@ exports.create = (req, res) => {
 		file: req.body.file
 	});
 
-	// console.log(alert._id);
+	// console.log(alert._id); -- maybe push update to webpage
 	
 	// Save Alert in the database
 	alert.save()
 	.then(data => {
-		res.send(data);
+		return res.send(data);
 	}).catch(err => {
-		res.status(500).send({
+		return res.status(500).send({
 			message: err.message || "Some error occurred while creating the Alert."
 		});
 	});
@@ -40,9 +45,9 @@ exports.find = (req, res) => {
 	}
 	Alert.find({}, null, {limit: Qlimit})
 	.then(alerts => {
-		res.send(alerts);
+		return res.send(alerts);
 	}).catch(err => {
-		res.status(500).send({
+		return res.status(500).send({
 			message: err.message || "Some error occurred while retrieving alerts."
 		});
 	});
@@ -57,7 +62,7 @@ exports.findOne = (req, res) => {
 				message: "Note not found with id " + req.params.alertId
 			});            
 		}
-		res.send(alert);
+		return res.send(alert);
 	}).catch(err => {
 		if(err.kind === 'ObjectId') {
 			return res.status(404).send({
@@ -73,6 +78,12 @@ exports.findOne = (req, res) => {
 
 // Delete an alert with the specified alertId in the request
 exports.delete = (req, res) => {
+	// Validate request
+	if (res.locals.authlevel != 0){
+		return res.status(400).send({
+			message: 'ERROR : Not authorized!'
+		});
+	}
 	Alert.findByIdAndRemove(req.params.alertId)
 	.then(alert => {
 		if(!alert) {
@@ -80,7 +91,7 @@ exports.delete = (req, res) => {
 				message: "Alert not found with id " + req.params.alertId
 			});
 		}
-		res.send({message: "Alert deleted successfully!"});
+		return res.send({message: "Alert deleted successfully!"});
 	}).catch(err => {
 		if(err.kind === 'ObjectId' || err.name === 'NotFound') {
 			return res.status(404).send({
@@ -92,9 +103,3 @@ exports.delete = (req, res) => {
 		});
 	});
 };
-
-
-// // Update an alert identified by the alertId in the request
-// exports.update = (req, res) => {
-
-// };
