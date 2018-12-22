@@ -28,9 +28,9 @@ def encode_speech(data):
 	data = b''.join(data)[:11796400]#Save Only first ~15Mb(once base64 encoded)
 	buf = io.BytesIO()
 	wf = wave.open(buf, 'wb')
-	wf.setnchannels(channels)
+	wf.setnchannels(1)
 	wf.setsampwidth(pyaudio.PyAudio().get_sample_size(pyaudio.paInt16))
-	wf.setframerate(sample_rate) 
+	wf.setframerate(16000) 
 	wf.writeframes(data)
 	wf.close()
 	buf.seek(0)
@@ -59,7 +59,7 @@ def send(data,text):
 	global url
 	#globals*
 	login()
-	post_fields = {'content': text,'file':encode_speech(data)}     # Set POST fields here 
+	post_fields = {'content': json.dumps(text) ,'file':encode_speech(data),'type':'data:audio/wav;base64,'}     # Set POST fields here 
 	r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields) 
 	print(r.content)
 
