@@ -16,12 +16,12 @@ from sphinxbase.sphinxbase import *
 
 import os
 import pyaudio
-import wave
 import audioop
 from collections import deque
 import time
 import math
 import sys
+import dashboard
 
 
 # These will need to be modified according to where the pocketsphinx folder is
@@ -64,21 +64,6 @@ def setAudioThreshold(num_samples=50):
 		threshold = 3500 #sets upperlimit
 	else:
 		threshold = r + 100 #adds 100 to avoid flase triggering
-
-def save_speech(data):
-	"""
-	Saves mic data to temporary WAV file. Returns filename of saved file
-	"""
-	filename = 'output_'+str(int(time.time()))
-	# writes data to WAV file
-	data = b''.join(data)
-	wf = wave.open(filename + '.wav', 'wb')
-	wf.setnchannels(channels)
-	wf.setsampwidth(pyaudio.PyAudio().get_sample_size(pyaudio.paInt16))
-	wf.setframerate(sample_rate) 
-	wf.writeframes(data)
-	wf.close()
-	return filename + '.wav'
 
 def decode_phrase(data):
 	global decoder
@@ -126,7 +111,7 @@ def run():
 			print("* Finished recording, decoding phrase")
 			r = decode_phrase(list(pre_threshold_audio) + audio2send)
 			if (len(r) > 0 and ( True in [ "help" in x for x in r] )):
-				filename = save_speech(list(pre_threshold_audio) + audio2send)
+				# filename = dashboard.save_speech(list(pre_threshold_audio) + audio2send)
 			print("DETECTED: ", r)
 			#Reset all
 			started = False

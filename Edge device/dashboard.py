@@ -1,5 +1,8 @@
 import requests,json,base64
+import wave
 
+
+#Load env vars
 env_vars = {}
 with open(".env") as f:
     for line in f:
@@ -13,34 +16,36 @@ with open(".env") as f:
         key, value = line.strip().split('=', 1)
         # os.environ[key] = value  # Load to local environ
         env_vars[key] = value # Save to a list
+#Load env vars*
 
 adminToken = env_vars["ADMIN_TOKEN"]
-url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "http://localhost:3000")+"/api/alerts/<replace>?file=remove&token="+adminToken
+userID = (env_vars["USERID"] if ("USERID" in env_vars) else "5c1e728bc93ad2550c33b110")
+s = requests.Session()
+
+url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "http://localhost:3000")+"/api/alerts/<replace>?file=remove"
+
+
+def save_speech(data):
+	"""
+	Saves mic data to temporary WAV file. Returns filename of saved file
+	"""
+	filename = 'output_'+str(int(time.time()))
+	# writes data to WAV file
+	data = b''.join(data)
+	wf = wave.open(filename + '.wav', 'wb')
+	wf.setnchannels(channels)
+	wf.setsampwidth(pyaudio.PyAudio().get_sample_size(pyaudio.paInt16))
+	wf.setframerate(sample_rate) 
+	wf.writeframes(data)
+	wf.close()
+	return filename + '.wav'
+
+def send
+
 
 while (1):
-	option = int(raw_input("get(0),getId(1),postFile(2),DeleteID(3),SaveFile(4),getUsers(5),SingUp(6),Login(7),DeleteUser(8)"))
-	if (option == 8):
-		 r = requests.delete(url = "http://localhost:3000/delete/"+raw_input("id:")+"?token="+adminToken)
-		 print r.content
-	elif (option == 7):
-		 post_fields = {'username': 'test','password':'test@test'}     # Set POST fields here 
-		 session = requests.Session();
-		 r = session.post(url = "http://localhost:3000/login?&token="+adminToken, data = post_fields) 
-		 print(r.content)
-		 print(r.cookies.get_dict())
-		 print(session.cookies.get_dict())
-	elif (option == 6):
-		with requests.session() as s:
-		    # post to the singup form
-		    post_fields = {'username': 'test','password':'test@test', 'authlevel':1}     # Set POST fields here 
-		    r = s.post("http://localhost:3000/singup?token="+adminToken, data=post_fields)
-		    print(r.content)
-		    print(r.text)
-		    print(r.cookies)
-	elif (option == 5):
-		r = requests.get("http://localhost:3000/listusers?token="+adminToken)
-		print r.content
-	elif (option == 4):
+	option = int(raw_input("get(0),getId(1),postFile(2),DeleteID(3),SaveFile(4)"))
+	if (option == 4):
 		r = requests.get(url.replace("<replace>",raw_input("id:")))
 		tmp = json.loads(r.content)
 		filee = open(raw_input("output_filename:"), "wb")

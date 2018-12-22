@@ -9,7 +9,8 @@ exports.singup = (req, res) => {
 		});
 	}
 	if (req.body.username &&
-	    req.body.password) {
+	    req.body.password && 
+	    req.body.authlevel) {
 
 	    var userData = {
 	      username: req.body.username,
@@ -19,9 +20,15 @@ exports.singup = (req, res) => {
 
 	    User.create(userData, function (error, user) {
 	      if (error) {
-	        return next(error);
+	        return res.status(400).send({
+				message: 'ERROR : '+error
+			});
 	      } else {
-	        // req.session.userId = user._id;
+	      	// req.session.userId = user._id;
+	      	return res.status(200).send({
+				session_token: user._id 
+			});
+	        
 	        // return res.redirect('/');
 	      }
 	    });
@@ -58,7 +65,7 @@ exports.find = (req, res) => {
 
 // Retrieve and return all alerts from the database.
 exports.login = (req, res) => {
-	User.authenticate(req.body.user, req.body.password, function (error, user) {
+	User.authenticate(req.body.username, req.body.password, function (error, user) {
       if (error || !user) {
         var err = new Error('Wrong user or password.');
         err.status = 401;
@@ -71,7 +78,7 @@ exports.login = (req, res) => {
 };
 
 
-// Find a single alert with a alertId
+// Allow updating of user password
 exports.update = (req, res) => {
 	User.findById(req.session.userId)
     .exec(function (error, user) {
@@ -90,7 +97,7 @@ exports.update = (req, res) => {
 };
 
 
-// Find a single alert with a alertId
+// logout
 exports.logout = (req, res) => {
 	if (req.session) {
 	    // delete session object
@@ -108,10 +115,10 @@ exports.logout = (req, res) => {
   }
 };
 
-// Delete an alert with the specified alertId in the request
+// Delete a user
 exports.delete = (req, res) => {
 	// Validate request
-	if (res.locals.authlevel != 0){
+	if (res.locals.authlevel == 0){
 		User.findByIdAndRemove(req.params.userId)
 		.then(alert => {
 			if(!alert) {
@@ -132,7 +139,7 @@ exports.delete = (req, res) => {
 		});
 	}else{
 		return res.status(400).send({
-			message: 'ERROR : Not authorized!'
+			ERROR: 'Not authorized!'
 		});
 	}
 };
