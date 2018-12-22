@@ -34,6 +34,9 @@ pre_threshold_audio_legnth = 0.5  #The ammount of time(in seconds) before the th
 threshold = 400 #Audio intensity to trigger recording of phrase
 decoder = None #Placeholder
 
+dashboard.channels = channels
+dashboard.sample_rate = sample_rate
+
 def setupDecoder():
 	global decoder
 	# Create a decoder with certain model

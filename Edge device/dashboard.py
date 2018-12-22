@@ -24,13 +24,21 @@ session = requests.Session()
 url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "http://localhost:3000")
 last_login = 0
 
+channels = 1
+sample_rate = 16000
+
+
 def encode_speech(data):
+	#globals
+	global channels
+	global sample_rate
+	#globals*
 	data = b''.join(data)[:11796400]#Save Only first ~15Mb(once base64 encoded)
 	buf = io.BytesIO()
 	wf = wave.open(buf, 'wb')
-	wf.setnchannels(1)
+	wf.setnchannels(channels)
 	wf.setsampwidth(pyaudio.PyAudio().get_sample_size(pyaudio.paInt16))
-	wf.setframerate(16000) 
+	wf.setframerate(sample_rate) 
 	wf.writeframes(data)
 	wf.close()
 	buf.seek(0)
