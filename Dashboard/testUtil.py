@@ -58,5 +58,5 @@ while (1):
 		r = requests.get(url.replace("<replace>",raw_input("id:")))
 		print r.content
 	else:
-		r = requests.get(url.replace("<replace>","")+"&limit=1")
+		r = requests.get(url.replace("<replace>","")+"&limit=5")
 		print r.content
