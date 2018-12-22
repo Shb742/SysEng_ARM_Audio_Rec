@@ -17,7 +17,7 @@ exports.create = (req, res) => {
 	// Create an alert
 	const alert = new Alert({
 		content: req.body.content || "Untitled", 
-		type: req.body.type || "audio/wav",
+		type: req.body.type || "data:audio/wav;base64,",
 		location: req.body.location || "Unspecified",
 		file: req.body.file
 	});
