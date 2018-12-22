@@ -1,5 +1,5 @@
-import requests,json,base64
-import wave
+import requests,json,base64,time
+import wave,io,pyaudio
 
 
 #Load env vars
@@ -18,51 +18,51 @@ with open(".env") as f:
         env_vars[key] = value # Save to a list
 #Load env vars*
 
-adminToken = env_vars["ADMIN_TOKEN"]
-userID = (env_vars["USERID"] if ("USERID" in env_vars) else "5c1e728bc93ad2550c33b110")
-s = requests.Session()
+userName = (env_vars["USERNAME"] if ("USERNAME" in env_vars) else "test")
+password = (env_vars["PASSWORD"] if ("PASSWORD" in env_vars) else "test@test")
+session = requests.Session()
+url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "http://localhost:3000")
+last_login = 0
 
-url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "http://localhost:3000")+"/api/alerts/<replace>?file=remove"
-
-
-def save_speech(data):
-	"""
-	Saves mic data to temporary WAV file. Returns filename of saved file
-	"""
-	filename = 'output_'+str(int(time.time()))
-	# writes data to WAV file
-	data = b''.join(data)
-	wf = wave.open(filename + '.wav', 'wb')
+def encode_speech(data):
+	data = b''.join(data)[:11796400]#Save Only first ~15Mb(once base64 encoded)
+	buf = io.BytesIO()
+	wf = wave.open(buf, 'wb')
 	wf.setnchannels(channels)
 	wf.setsampwidth(pyaudio.PyAudio().get_sample_size(pyaudio.paInt16))
 	wf.setframerate(sample_rate) 
 	wf.writeframes(data)
 	wf.close()
-	return filename + '.wav'
+	buf.seek(0)
+	return base64.b64encode(buf.read()).decode()
 
-def send
+
+def login():
+	#globals
+	global userName
+	global password
+	global session
+	global url
+	global last_login
+	#globals*
+	if ( (time.time()-last_login) > 1800.0):# if last login was more than 30 mins ago login again
+		post_fields = {'username': userName,'password':password}   
+		r = session.post(url = url+"/login", data = post_fields)
+		print(session.cookies.get_dict())
+		last_login = time.time()
+
+def send(data,text):
+	#globals
+	global userName
+	global password
+	global session
+	global url
+	#globals*
+	login()
+	post_fields = {'content': text,'file':encode_speech(data)}     # Set POST fields here 
+	r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields) 
+	print(r.content)
 
 
-while (1):
-	option = int(raw_input("get(0),getId(1),postFile(2),DeleteID(3),SaveFile(4)"))
-	if (option == 4):
-		r = requests.get(url.replace("<replace>",raw_input("id:")))
-		tmp = json.loads(r.content)
-		filee = open(raw_input("output_filename:"), "wb")
-		filee.write(base64.b64decode(tmp["file"]))
-		filee.close()
-	elif (option == 3):
-		r = requests.delete(url.replace("<replace>",raw_input("id:")))
-		print r.content
-	elif (option == 2):
-		fileName = raw_input("file name:")
-		data = base64.b64encode(open(fileName, "rb").read())
-		post_fields = {'content': 'bar','file':data}     # Set POST fields here 
-		r = requests.post(url = url.replace("<replace>",""), data = post_fields) 
-		print r.content
-	elif (option == 1):
-		r = requests.get(url.replace("<replace>",raw_input("id:")))
-		print r.content
-	else:
-		r = requests.get(url.replace("<replace>","")+"&limit=1")
-		print r.content
+	
+

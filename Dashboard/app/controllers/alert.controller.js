@@ -5,12 +5,12 @@ exports.create = (req, res) => {
 	// Validate request
 	if (res.locals.authlevel > 1){
 		return res.status(400).send({
-			message: 'ERROR : Not authorized!'
+			ERROR: 'Not authorized!'
 		});
 	}
 	if(!req.body.content) {
 		return res.status(400).send({
-			message: "Content can not be empty"
+			ERROR: "Content can not be empty"
 		});
 	}
 
@@ -32,7 +32,7 @@ exports.create = (req, res) => {
 		});
 	}).catch(err => {
 		return res.status(500).send({
-			message: err.message || "Some error occurred while creating the Alert."
+			ERROR: err.message || "Some error occurred while creating the Alert."
 		});
 	});
 

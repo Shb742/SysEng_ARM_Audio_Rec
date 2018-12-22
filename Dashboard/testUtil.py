@@ -27,7 +27,6 @@ while (1):
 		 session = requests.Session();
 		 r = session.post(url = "http://localhost:3000/login?&token="+adminToken, data = post_fields) 
 		 print(r.content)
-		 print(r.cookies.get_dict())
 		 print(session.cookies.get_dict())
 	elif (option == 6):
 		with requests.session() as s:

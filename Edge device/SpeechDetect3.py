@@ -15,7 +15,6 @@ from pocketsphinx.pocketsphinx import *
 from sphinxbase.sphinxbase import *
 
 import os
-import pyaudio
 import audioop
 from collections import deque
 import time
@@ -111,7 +110,8 @@ def run():
 			print("* Finished recording, decoding phrase")
 			r = decode_phrase(list(pre_threshold_audio) + audio2send)
 			if (len(r) > 0 and ( True in [ "help" in x for x in r] )):
-				# filename = dashboard.save_speech(list(pre_threshold_audio) + audio2send)
+				dashboard.send(list(pre_threshold_audio) + audio2send)
+				stream.read()#get rid of old data
 			print("DETECTED: ", r)
 			#Reset all
 			started = False
