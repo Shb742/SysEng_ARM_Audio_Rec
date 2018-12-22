@@ -13,10 +13,8 @@ exports.checkAuth = (req, res, next) => {
 				res.status(500).send({message: 'ERROR : ' + error});
 			} else {
 				if (user === null) {
-					console.log("User not auth");
 					res.status(400).send({message: 'ERROR : Not authorized!'});
 				} else {
-					console.log("User authed");
 					res.locals.authlevel = user.authlevel;
 					next()
 				}
