@@ -57,7 +57,7 @@ def login():
 	#globals*
 	if ( (time.time()-last_login) > 1800.0):# if last login was more than 30 mins ago login again
 		post_fields = {'username': userName,'password':password}   
-		r = session.post(url = url+"/login", data = post_fields)
+		r = session.post(url = url+"/login", data = post_fields, verify=False)
 		print(session.cookies.get_dict())
 		last_login = time.time()
 
@@ -71,7 +71,7 @@ def send(data,text):
 	#globals*
 	login()
 	post_fields = {'content': json.dumps(text) ,'file':encode_speech(data),'type':'data:audio/wav;base64,', 'location':location}     # Set POST fields here 
-	r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields) 
+	r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False) 
 	print(r.content)
 
 

@@ -1,7 +1,24 @@
+//Imports
 const express = require('express');
 var session = require('express-session');
 const bodyParser = require('body-parser');
 require('dotenv').config()//load .env files
+var https = require('https');
+var http = require('http');
+var fs = require('fs');
+//Imports*
+
+
+//HTTPS
+const ports = [80,443];
+var sslkey = fs.readFileSync('./config/ssl/ssl-key.pem');
+var sslcert = fs.readFileSync('./config/ssl/ssl-cert.pem')
+var credentials = {
+    key: sslkey,
+    cert: sslcert
+};
+
+
 
 // create express app
 const app = express();
@@ -18,7 +35,7 @@ app.use(session({
   secret: (process.env.SESSION_SECRET || '075nV3JbOlgSV7rPGzajyAXQIw4NeXA12bfSzKj'),
   resave: true,
   saveUninitialized: false,
-  cookie: { maxAge: 3600000,secure: false }
+  cookie: { maxAge: 3600000,secure: true }
 }));
 
 
@@ -42,6 +59,21 @@ mongoose.connect(dbConfig.url, {
 
 
 
+
+//Force HTTPS
+const forceSecure = function(req, res, next) {
+	if (req.secure) {
+		// Already https; don't do anything special.
+		next();
+	}
+	else {
+		// Redirect to https.
+		res.redirect('https://' + req.headers.host + req.url);
+	}
+};
+app.use(forceSecure);
+
+
 // // Require Alert routes
 require('./app/routes/alert.routes.js')(app);
 
@@ -52,17 +84,11 @@ require('./app/routes/user.routes.js')(app);
 app.use(express.static('root'));
 
 
-// define a simple route
-// app.get('/', (req, res) => {
-// 	// res.sendFile('home.html', {root : __dirname});
-// 	//res.render('home.html');
-// 	 res.json({"message": "Welcome to the Dashboard for EDVS!"});
-// 	// res.writeHeader(200, {"Content-Type": "text/html"});  
-// 	// res.write("<h1>hi</h1>");
-// 	// res.end();
-// });
 
-// listen for requests
-app.listen(3000, () => {
-	console.log("Server is listening on port 3000");
+var httpServer = http.createServer(app);
+httpServer.listen(ports[0]);
+
+var httpsServer = https.createServer(credentials,app);
+httpsServer.listen(ports[1], () => {
+	console.log("Server is listening");
 });
