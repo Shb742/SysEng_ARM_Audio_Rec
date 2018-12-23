@@ -1,21 +1,21 @@
 import requests,json,base64,time
 import wave,io,pyaudio
-
+import threading
 
 #Load env vars
 env_vars = {}
 with open(".env") as f:
-    for line in f:
-        if line.startswith('#'):
-            continue
-        # if 'export' not in line:
-        #     continue
-        # Remove leading `export `, if you have those
-        # then, split name / value pair
-        # key, value = line.replace('export ', '', 1).strip().split('=', 1)
-        key, value = line.strip().split('=', 1)
-        # os.environ[key] = value  # Load to local environ
-        env_vars[key] = value # Save to a list
+	for line in f:
+		if line.startswith('#'):
+			continue
+		# if 'export' not in line:
+		#     continue
+		# Remove leading `export `, if you have those
+		# then, split name / value pair
+		# key, value = line.replace('export ', '', 1).strip().split('=', 1)
+		key, value = line.strip().split('=', 1)
+		# os.environ[key] = value  # Load to local environ
+		env_vars[key] = value # Save to a list
 #Load env vars*
 
 userName = (env_vars["USERNAME"] if ("USERNAME" in env_vars) else "test")
@@ -28,6 +28,9 @@ last_login = 0
 
 channels = 1
 sample_rate = 16000
+
+# lock to serialize console output
+lock = threading.Lock()
 
 
 def encode_speech(data):
@@ -47,7 +50,7 @@ def encode_speech(data):
 	return base64.b64encode(buf.read()).decode()
 
 
-def login():
+def login(force=False):
 	#globals
 	global userName
 	global password
@@ -55,25 +58,56 @@ def login():
 	global url
 	global last_login
 	#globals*
-	if ( (time.time()-last_login) > 1800.0):# if last login was more than 30 mins ago login again
+	if (force or ((time.time()-last_login) > 1800.0) ):# if last login was more than 30 mins ago login again
 		post_fields = {'username': userName,'password':password}   
-		r = session.post(url = url+"/login", data = post_fields, verify=False)
-		print(session.cookies.get_dict())
-		last_login = time.time()
+		try:
+			r = session.post(url = url+"/login", data = post_fields, verify=False)
+			print("logged in")
+			last_login = time.time()
+		except:
+			pass#Fail silently
+
+def ping():
+	#globals
+	global session
+	global url
+	global lock
+	#globals*
+	while 1:
+		with lock:
+			login()
+			try:
+				print("pinging.....")
+				r = session.get(url = url+"/ping", verify=False)
+				print("here")
+				print(r.content)
+				if (not('Success' in json.loads(r.content))):
+					print("ping-retrying...")
+					login(True)
+					r = session.get(url = url+"/ping", verify=False)
+			except:
+				pass#Fail silently
+		time.sleep(300)#ping every 5 mins
 
 def send(data,text):
 	#globals
-	global userName
-	global password
 	global session
 	global url
 	global location
+	global lock
 	#globals*
-	login()
-	post_fields = {'content': json.dumps(text) ,'file':encode_speech(data),'type':'data:audio/wav;base64,', 'location':location}     # Set POST fields here 
-	r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False) 
-	print(r.content)
-
-
+	with lock:
+		login()
+		post_fields = {'content': json.dumps(text) ,'file':encode_speech(data),'type':'data:audio/wav;base64,', 'location':location}     # Set POST fields here
+		try:
+			r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False) 
+			#Retry one time if post failed (i.e session destroyed)
+			if (not('Success' in json.loads(r.content))):
+				print("retrying.....")
+				login(True)
+				r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False) 
+			#Retry one time if post failed (i.e session destroyed)*
+			print(r.content)
+		except:
+			pass#Fail silently
 	
-

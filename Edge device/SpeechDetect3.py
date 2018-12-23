@@ -21,7 +21,7 @@ import time
 import math
 import sys
 import dashboard
-
+import threading
 
 # These will need to be modified according to where the pocketsphinx folder is
 model_directory = "../Sphinx/pocketsphinx-5prealpha/model"
@@ -99,6 +99,10 @@ def run():
 	#Prepend audio from 0.5 seconds before noise was detected
 	pre_threshold_audio = deque(maxlen= int(pre_threshold_audio_legnth * rel))
 	started = False
+
+	pinger = threading.Thread(target=dashboard.ping)
+	pinger.daemon = True  # thread dies when main thread (only non-daemon thread) exits.
+	pinger.start()
 
 	while True:
 		cur_data = stream.read(stream_chunk_size)

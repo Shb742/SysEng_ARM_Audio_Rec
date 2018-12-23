@@ -5,6 +5,7 @@ const UserSchema = mongoose.Schema({
     username: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     authlevel: { type: Number, default: 2 },
+    lastSeen:  { type: Date, default: Date.now },
     createdDate: { type: Date, default: Date.now }
 });
 

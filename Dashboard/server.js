@@ -19,7 +19,6 @@ var credentials = {
 };
 
 
-
 // create express app
 const app = express();
 
@@ -57,9 +56,6 @@ mongoose.connect(dbConfig.url, {
 });
 
 
-
-
-
 //Force HTTPS
 const forceSecure = function(req, res, next) {
 	if (req.secure) {
@@ -73,7 +69,6 @@ const forceSecure = function(req, res, next) {
 };
 app.use(forceSecure);
 
-
 // // Require Alert routes
 require('./app/routes/alert.routes.js')(app);
 
@@ -82,7 +77,6 @@ require('./app/routes/user.routes.js')(app);
 
 //For the startic files
 app.use(express.static('root'));
-
 
 
 var httpServer = http.createServer(app);
