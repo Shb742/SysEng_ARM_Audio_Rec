@@ -189,10 +189,14 @@ case "$1" in
 esac"""
 initdScript = initdScript.replace("~path~",dir_path)
 initdScriptLocation = "/etc/init.d/EdvsDashboard"
-initdScriptFile = open(initdScriptLocation,"w")
-initdScriptFile.write(initdScript)
-initdScriptFile.close()
-
+try:
+    initdScriptFile = open(initdScriptLocation,"w")
+    initdScriptFile.write(initdScript)
+    initdScriptFile.close()
+except IOError as e:
+    if (e[0] == errno.EPERM):
+        print("Error run as root")
+        sys.exit(1)
 os.system("sudo chmod 755 "+initdScriptLocation)
 os.system("sudo chown root:root "+initdScriptLocation)
 os.system("sudo "+initdScriptLocation+" start")
