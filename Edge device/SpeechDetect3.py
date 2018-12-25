@@ -38,6 +38,7 @@ def setupDecoder():
 	global decoder
 	# Create a decoder with certain model
 	config = Decoder.default_config()
+	config.set_boolean('-verbose', False)
 	config.set_string('-hmm', os.path.join(model_directory, 'en-us/en-us'))
 	config.set_string('-lm', os.path.join(model_directory, 'en-us/en-us.lm.bin'))
 	config.set_string('-dict', 'customDict')#config.set_string('-dict', os.path.join(model_directory, 'en-us/cmudict-en-us.dict'))
