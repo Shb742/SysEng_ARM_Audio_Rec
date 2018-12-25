@@ -8,9 +8,6 @@ https://cmusphinx.github.io/wiki/tutoriallm/#using-keyword-lists-with-pocketsphi
 https://cmusphinx.github.io/wiki/tutorialdict/
 """
 
-#arecord -v -f S16_LE -c1 -r48000 -t raw | sox -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - vol 0 dB | rnnoise/examples/./rnn_test /dev/stdout | sox -t raw -r 48000 -b 16 -c 1 -L -e signed-integer - -t raw -r 16000 -b 16 -c 1 -L -e signed-integer - | python SpeechDetectStdIn.py
-#https://raspberrypi.stackexchange.com/questions/56773/using-pocketsphinx-for-voice-control-applications
-
 from pocketsphinx.pocketsphinx import *
 from sphinxbase.sphinxbase import *
 
@@ -24,7 +21,7 @@ import dashboard
 import threading
 
 # These will need to be modified according to where the pocketsphinx folder is
-model_directory = "../Sphinx/pocketsphinx-5prealpha/model"
+model_directory = "pocketsphinx-5prealpha/model"
 
 stream_chunk_size = 1024  # CHUNKS of bytes to read each time from mic
 channels = 1
@@ -65,7 +62,7 @@ def setAudioThreshold(num_samples=50):
 	if r < 3000:
 		threshold = 3500 #sets upperlimit
 	else:
-		threshold = r + 100 #adds 100 to avoid flase triggering
+		threshold = r + 150 #adds offset to avoid flase triggering
 
 def decode_phrase(data):
 	global decoder
@@ -107,7 +104,7 @@ def run():
 	while True:
 		cur_data = stream.read(stream_chunk_size)
 		slid_win.append(math.sqrt(abs(audioop.avg(cur_data, 4))))
-		if sum([x > threshold for x in slid_win]) > 0:#Edit here if we want multiple values above threshold to trigger listening
+		if len([x > threshold for x in slid_win]) > 0:#Edit here if we want multiple values above threshold to trigger listening
 			if started == False:
 				print("* Starting recording of phrase")
 				started = True
