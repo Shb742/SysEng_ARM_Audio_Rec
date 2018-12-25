@@ -1,7 +1,8 @@
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
-os.system("sudo apt install -y python3-pip; sudo pip3 install -r requirements.txt")
+os.system("sudo apt install -y libatlas-base-dev python3 python3-dev python3-pip build-essential swig git libpulse-dev libasound2-dev python3-pyaudio sox")
+os.system("sudo pip3 install -r requirements.txt")
 env="""SERVER_URL=<server>
 USERNAME=<user>
 PASSWORD=<password>
@@ -28,6 +29,7 @@ input("press enter to conitnue")
 
 os.system("tar -xvf pocketsphinx-5prealpha.tar; tar -xvf sphinxbase-5prealpha.tar; mv sphinxbase-5prealpha sphinxbase;")
 os.system("cd sphinxbase; sudo ./autogen.sh; sudo ./configure; sudo make ; sudo make install")
+os.system("cd pocketsphinx-5prealpha; sudo ./autogen.sh; sudo ./configure; sudo make clean all ; sudo make install")
 os.system("sudo chmod +x callSpeechRec")
 input("press enter to conitnue")
 
@@ -97,7 +99,7 @@ start_it() {
           exit
         fi
         set -a
-        \"$APP_DIR\"/./$APP $KWARGS &>> \"$LOG_FILE\" &
+        \"$APP_DIR\"/./$APP $KWARGS &> \"$LOG_FILE\" &
         echo \$! > $PID_FILE" | sudo -i -u $USER
     echo "$APP_NAME started with pid $(get_pid)"
 }
@@ -105,7 +107,7 @@ start_it() {
 stop_process() {
     PID=$(get_pid)
     echo "Killing process $PID"
-    kill $PID
+    pkill -TERM -P $PID
     wait $PID 2>/dev/null
 }
 

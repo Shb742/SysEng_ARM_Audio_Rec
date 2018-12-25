@@ -33,9 +33,9 @@ exports.singup = (req, res) => {
 		  }
 		});
 	} else {
-	var err = new Error('All fields required.');
-	err.status = 400;
-	return next(err);
+	return res.status(400).send({
+		message: 'ERROR : Malformed request'
+	});
   }
 	
 };
@@ -67,9 +67,9 @@ exports.find = (req, res) => {
 exports.login = (req, res) => {
 	User.authenticate(req.body.username, req.body.password, function (error, user) {
 	  if (error || !user) {
-		var err = new Error('Wrong user or password.');
-		err.status = 401;
-		return next(err);
+		return res.status(400).send({
+			message: 'ERROR : Wrong Credentials'
+		});
 	  } else {
 		req.session.userId = user._id;
 		return res.redirect('/');
@@ -103,12 +103,14 @@ exports.ping = (req, res) => {
 	User.findByIdAndUpdate(req.session.userId,{lastSeen: new Date()})
 	.exec(function (error, user) {
 	  if (error) {
-		return next(error);
+		return res.status(500).send({
+			message: 'ERROR : Something went wrong'
+		});
 	  } else {
 		if (user === null) {
-		  var err = new Error('Not authorized!');
-		  err.status = 400;
-		  return next(err);
+		  	return res.status(400).send({
+				message: 'ERROR : Not authorized!'
+			});
 		} else {
 			return res.status(200).send({
 				Success : "lastSeen updated"
@@ -125,7 +127,9 @@ exports.logout = (req, res) => {
 		// delete session object
 		req.session.destroy(function (err) {
 			if (err) {
-				return next(err);
+				return res.status(500).send({
+					message: 'ERROR : Something went wrong'
+				});
 			} else {
 				return res.status(200).send({
 				message: "Logged out" 
@@ -143,18 +147,18 @@ exports.delete = (req, res) => {
 		.then(alert => {
 			if(!alert) {
 				return res.status(404).send({
-					message: "User not found with id " + req.params.alertId
+					message: "User not found with id " + req.params.userId
 				});
 			}
 			return res.send({message: "User deleted successfully!"});
 		}).catch(err => {
 			if(err.kind === 'ObjectId' || err.name === 'NotFound') {
 				return res.status(404).send({
-					message: "User not found with id " + req.params.alertId
+					message: "User not found with id " + req.params.userId
 				});
 			}
 			return res.status(500).send({
-				message: "Could not delete user with id " + req.params.alertId
+				message: "Could not delete user with id " + req.params.userId
 			});
 		});
 	}else{

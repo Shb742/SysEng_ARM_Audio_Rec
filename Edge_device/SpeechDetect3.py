@@ -105,7 +105,7 @@ def run():
 	while True:
 		cur_data = stream.read(stream_chunk_size)
 		slid_win.append(math.sqrt(abs(audioop.avg(cur_data, 4))))
-		if len([x > threshold for x in slid_win]) > 0:#Edit here if we want multiple values above threshold to trigger listening
+		if sum([x > threshold for x in slid_win]) > 0:#Edit here if we want multiple values above threshold to trigger listening
 			if started == False:
 				print("* Starting recording of phrase")
 				started = True
