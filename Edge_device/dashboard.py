@@ -79,9 +79,10 @@ def ping():
 			try:
 				print("pinging.....")
 				r = session.get(url = url+"/ping", verify=False)
+				resp = r.content.decode("utf-8") 
 				print("here")
-				print(r.content)
-				if (not('Success' in json.loads(r.content))):
+				print(resp)
+				if (not('Success' in json.loads(resp))):
 					print("ping-retrying...")
 					login(True)
 					r = session.get(url = url+"/ping", verify=False)
@@ -102,7 +103,7 @@ def send(data,text):
 		try:
 			r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False) 
 			#Retry one time if post failed (i.e session destroyed)
-			if (not('Success' in json.loads(r.content))):
+			if (not('Success' in json.loads(r.content.decode("utf-8")))):
 				print("retrying.....")
 				login(True)
 				r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False) 
