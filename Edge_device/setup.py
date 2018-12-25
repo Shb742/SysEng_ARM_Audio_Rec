@@ -126,12 +126,9 @@ start_app() {
             exit 1
         else
             echo "$APP_NAME stopped, but pid file exists"
-            if [ $FORCE_OP = true ]
-            then
-                echo "Forcing start anyways"
-                remove_pid_file
-                start_it
-            fi
+            echo "Forcing start anyways"
+            remove_pid_file
+            start_it
         fi
     else
         start_it
