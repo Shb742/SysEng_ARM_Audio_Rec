@@ -217,5 +217,6 @@ except IOError as e:
         sys.exit(1)
 os.system("sudo chmod 755 "+initdScriptLocation)
 os.system("sudo chown root:root "+initdScriptLocation)
+os.system("sudo update-rc.d "+initdScriptLocation.split("/")[-1]+" defaults")
 os.system("sudo "+initdScriptLocation+" start")
 print("USAGE: sudo /etc/init.d/EdvsDashboard (start|stop|restart|status)")
