@@ -2,17 +2,17 @@ import requests,json,base64
 
 env_vars = {}
 with open(".env") as f:
-    for line in f:
-        if line.startswith('#'):
-            continue
-        # if 'export' not in line:
-        #     continue
-        # Remove leading `export `, if you have those
-        # then, split name / value pair
-        # key, value = line.replace('export ', '', 1).strip().split('=', 1)
-        key, value = line.strip().split('=', 1)
-        # os.environ[key] = value  # Load to local environ
-        env_vars[key] = value # Save to a list
+	for line in f:
+		if line.startswith('#'):
+			continue
+		# if 'export' not in line:
+		#     continue
+		# Remove leading `export `, if you have those
+		# then, split name / value pair
+		# key, value = line.replace('export ', '', 1).strip().split('=', 1)
+		key, value = line.strip().split('=', 1)
+		# os.environ[key] = value  # Load to local environ
+		env_vars[key] = value # Save to a list
 
 adminToken = env_vars["ADMIN_TOKEN"]
 url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "http://localhost:3000")
@@ -31,12 +31,11 @@ while (1):
 		 print(session.cookies.get_dict())
 	elif (option == 6):
 		with requests.session() as s:
-		    # post to the singup form
-		    post_fields = {'username': 'test','password':'test@test', 'authlevel':1}     # Set POST fields here 
-		    r = s.post(url+"/singup?token="+adminToken, data=post_fields, verify=False)
-		    print(r.content)
-		    print(r.text)
-		    print(r.cookies)
+			# post to the singup form
+			post_fields = {'username': 'test','password':'test@test', 'authlevel':1}     # Set POST fields here 
+			r = s.post(url+"/singup?token="+adminToken, data=post_fields, verify=False)
+			print(r.content)
+			print(r.cookies)
 	elif (option == 5):
 		r = requests.get(url+"/listusers?token="+adminToken, verify=False)
 		print r.content
