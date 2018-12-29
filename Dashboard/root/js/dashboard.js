@@ -32,7 +32,7 @@ function playAudio(elem){
             elem.audio.play();
           })
           .fail(function(err) {
-            alert( "error" );
+            alert(err.responseText);
             window.location.replace("/pages/login.html");
         });
        
@@ -52,7 +52,7 @@ function updateAlerts(first_update){
             table.draw();
           })
           .fail(function(err) {
-            alert( "error" );
+            alert(err.responseText);
             window.location.replace("/pages/login.html");
         });
     //}
@@ -89,8 +89,8 @@ function checkForAlerts(first_update){
             }
 
         })
-        .fail(function() {
-                alert( "error" );
+        .fail(function(err) {
+                alert(err.responseText);
                 window.location.replace("/pages/login.html");
         });
     }
