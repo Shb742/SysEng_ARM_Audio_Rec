@@ -6,7 +6,7 @@ exports.singup = (req, res) => {
 	// Validate request
 	if (res.locals.authlevel != 0){
 		return res.status(400).send({
-			message: 'ERROR : Not authorized!'
+			ERROR: 'Not authorized!'
 		});
 	}
 	sanitize(req.body);
