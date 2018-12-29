@@ -41,7 +41,8 @@ while (1):
 		r = requests.get(url+"/listusers?token="+adminToken, verify=False)
 		print r.content
 	elif (option == 4):
-		r = requests.get( (url+api).replace("<replace>",raw_input("id:")), verify=False)
+		print (url+api).replace("<replace>",raw_input("id:")).replace("file=remove","")
+		r = requests.get( (url+api).replace("<replace>",raw_input("id:")).replace("file=remove",""), verify=False)
 		tmp = json.loads(r.content)
 		filee = open(raw_input("output_filename:"), "wb")
 		filee.write(base64.b64decode(tmp["file"]))
