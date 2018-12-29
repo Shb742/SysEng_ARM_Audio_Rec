@@ -1,13 +1,15 @@
 // AUTH
 const User = require('../models/user.model.js');
 const admintoken = process.env.ADMIN_TOKEN || "DEFAULT@Admin123ToKen0qekksd";
+const sanitize = require('mongo-sanitize');
 
 exports.checkAuth = (req, res, next) => {
-	if (req.query.token ==  admintoken){
+	sanitize(req);//make safe for mongodb
+	if (escape(req.query.token) ==  admintoken){
 		res.locals.authlevel = 0;//admin
 		next()
 	}else if (req.session) {
-		User.findById(req.session.userId)
+		User.findById(sanitize(req.session.userId))
 		.exec(function (error, user) {
 			if (error) {
 				res.status(500).send({message: 'ERROR : ' + error});

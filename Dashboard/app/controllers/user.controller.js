@@ -1,4 +1,5 @@
 const User = require('../models/user.model.js');
+const sanitize = require('mongo-sanitize');
 
 // Create and Save a new Alert
 exports.singup = (req, res) => {
@@ -8,12 +9,13 @@ exports.singup = (req, res) => {
 			message: 'ERROR : Not authorized!'
 		});
 	}
+	sanitize(req.body);
 	if (req.body.username &&
 		req.body.password && 
-		req.body.authlevel) {
-
+		!isNaN(parseInt(req.body.authlevel))) {
+		
 		var userData = {
-		  username: req.body.username,
+		  username: escape(req.body.username),
 		  password: req.body.password,
 		  authlevel: req.body.authlevel
 		}
@@ -34,7 +36,7 @@ exports.singup = (req, res) => {
 		});
 	} else {
 	return res.status(400).send({
-		message: 'ERROR : Malformed request'
+		ERROR: 'Malformed request'
 	});
   }
 	
@@ -46,7 +48,7 @@ exports.find = (req, res) => {
 	// Validate request
 	if (res.locals.authlevel != 0){
 		return res.status(400).send({
-			message: 'ERROR : Not authorized!'
+			ERROR: 'Not authorized!'
 		});
 	}
 	var Qlimit = parseInt(req.query.limit);
@@ -65,10 +67,11 @@ exports.find = (req, res) => {
 
 // Retrieve and return all alerts from the database.
 exports.login = (req, res) => {
+	sanitize(req.body);
 	User.authenticate(req.body.username, req.body.password, function (error, user) {
 	  if (error || !user) {
 		return res.status(400).send({
-			message: 'ERROR : Wrong Credentials'
+			ERROR: 'Wrong Credentials'
 		});
 	  } else {
 		req.session.userId = user._id;
@@ -104,12 +107,12 @@ exports.ping = (req, res) => {
 	.exec(function (error, user) {
 	  if (error) {
 		return res.status(500).send({
-			message: 'ERROR : Something went wrong'
+			ERROR: 'Something went wrong'
 		});
 	  } else {
 		if (user === null) {
 		  	return res.status(400).send({
-				message: 'ERROR : Not authorized!'
+				ERROR: 'Not authorized!'
 			});
 		} else {
 			return res.status(200).send({
@@ -128,7 +131,7 @@ exports.logout = (req, res) => {
 		req.session.destroy(function (err) {
 			if (err) {
 				return res.status(500).send({
-					message: 'ERROR : Something went wrong'
+					ERROR: 'Something went wrong'
 				});
 			} else {
 				return res.status(200).send({

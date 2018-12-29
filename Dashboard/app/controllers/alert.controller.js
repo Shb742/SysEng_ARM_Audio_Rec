@@ -16,10 +16,10 @@ exports.create = (req, res) => {
 
 	// Create an alert
 	const alert = new Alert({
-		content: req.body.content || "Untitled", 
+		content: escape(req.body.content) || "Untitled", 
 		type: req.body.type || "data:audio/wav;base64,",
-		location: req.body.location || "Unspecified",
-		file: req.body.file
+		location: escape(req.body.location) || "Unspecified",
+		file: escape(req.body.file)
 	});
 
 	// console.log(alert._id); -- maybe push update to webpage
@@ -44,31 +44,32 @@ exports.find = (req, res) => {
 	if (isNaN(Qlimit)){
 		Qlimit = 10;
 	}
+	var find_file = "";
 	if (req.query.file == undefined){
-		Alert.find({}, null, {limit: Qlimit}).select("+file")
-		.then(alerts => {
-			return res.send(alerts);
-		}).catch(err => {
-			return res.status(500).send({
-				message: err.message || "Some error occurred while retrieving alerts."
-			});
-		});
+		find_file = "+file";
 	}else{
-		Alert.find({}, null, {limit: Qlimit})
-		.then(alerts => {
-			return res.send(alerts);
-		}).catch(err => {
-			return res.status(500).send({
-				message: err.message || "Some error occurred while retrieving alerts."
-			});
-		});
+		find_file = "-file";
 	}
+	Alert.find({}, null, {limit: Qlimit}).select(find_file)
+	.then(alerts => {
+		return res.send(alerts);
+	}).catch(err => {
+		return res.status(500).send({
+			message: err.message || "Some error occurred while retrieving alerts."
+		});
+	});
 	
 };
 
 // Find a single alert with a alertId
 exports.findOne = (req, res) => {
-	Alert.findById(req.params.alertId).select("+file")
+	var find_file = "";
+	if (req.query.file == undefined){
+		find_file = "+file";
+	}else{
+		find_file = "-file";
+	}
+	Alert.findById(escape(req.params.alertId)).select(find_file)
 	.then(alert => {
 		if(!alert) {
 			return res.status(404).send({
@@ -97,7 +98,7 @@ exports.delete = (req, res) => {
 			message: 'ERROR : Not authorized!'
 		});
 	}
-	Alert.findByIdAndRemove(req.params.alertId)
+	Alert.findByIdAndRemove(escape(req.params.alertId))
 	.then(alert => {
 		if(!alert) {
 			return res.status(404).send({
