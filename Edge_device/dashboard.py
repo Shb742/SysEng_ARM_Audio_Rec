@@ -99,7 +99,8 @@ def send(data,text):
 	#globals*
 	with lock:
 		login()
-		post_fields = {'content': json.dumps(text) ,'file':encode_speech(data),'type':'data:audio/wav;base64,', 'location':location}     # Set POST fields here
+		#text.replace("<s>","").replace("</s>","").replace("<","").replace(">","")
+		post_fields = {'content': ' '.join(text) ,'file':encode_speech(data),'type':'data:audio/wav;base64,', 'location':location}     # Set POST fields here
 		try:
 			r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False) 
 			#Retry one time if post failed (i.e session destroyed)

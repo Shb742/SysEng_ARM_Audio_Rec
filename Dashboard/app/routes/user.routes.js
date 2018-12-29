@@ -8,6 +8,9 @@ module.exports = (app) => {
 	// Update user details
 	// app.post('/update', [auth.checkAuth,users.update]);
 
+	// Get Number Of Alerts
+	app.get('/countusers', [auth.checkAuth, users.count]);
+
 	// List All Users
 	app.get('/listusers', [auth.checkAuth,users.find]); 
 

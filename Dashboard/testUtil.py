@@ -33,6 +33,13 @@ while (1):
 		with requests.session() as s:
 			# post to the singup form
 			post_fields = {'username': 'test','password':'test@test', 'authlevel':1}     # Set POST fields here 
+			username = raw_input("username :")
+			password = raw_input("password :")
+			authlevel = int(raw_input("authlevel :"))
+			if  ((len(username)+len(password))>6):
+				post_fields["username"] = username
+				post_fields["password"] = password
+				post_fields["authlevel"] = authlevel
 			r = s.post(url+"/singup?token="+adminToken, data=post_fields, verify=False)
 			print(r.content)
 			print(r.cookies)

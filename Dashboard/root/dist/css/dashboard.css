@@ -1,0 +1,13 @@
+@keyframes highlight {
+ 	0% {
+ 		background: #ff6730; 
+ 	}
+ 	100% {
+ 		background: none;
+ 	}
+}
+
+.highlight {
+    animation: highlight 1.3s;
+    animation-iteration-count: infinite;
+}

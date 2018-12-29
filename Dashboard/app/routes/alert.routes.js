@@ -5,6 +5,9 @@ module.exports = (app) => {
 	// Create a new alert
 	app.post('/api/alerts', [auth.checkAuth, alerts.create] );
 
+	// Get Number Of Alerts
+	app.get('/api/alerts/count/', [auth.checkAuth, alerts.count]);
+
 	// Retrieve all alerts
 	app.get('/api/alerts', [auth.checkAuth, alerts.find] );
 
@@ -14,5 +17,6 @@ module.exports = (app) => {
 
 	// Delete an alert with alertId
 	app.delete('/api/alerts/:alertId', [auth.checkAuth, alerts.delete]);
+
 	
 }

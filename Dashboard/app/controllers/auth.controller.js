@@ -23,6 +23,6 @@ exports.checkAuth = (req, res, next) => {
 			}
 		});
 	}else{
-		res.redirect('/');
+		res.redirect('/pages/login.html');
 	}
 }

@@ -16,7 +16,7 @@ exports.create = (req, res) => {
 
 	// Create an alert
 	const alert = new Alert({
-		content: escape(req.body.content) || "Untitled", 
+		content: escape(req.body.content) || "example", 
 		type: req.body.type || "data:audio/wav;base64,",
 		location: escape(req.body.location) || "Unspecified",
 		file: escape(req.body.file)
@@ -38,24 +38,44 @@ exports.create = (req, res) => {
 
 };
 
+
+//Get total number of alerts
+exports.count = (req, res) => {
+	//countDocuments()
+	Alert.count().then(count => {
+		return res.status(200).send({
+			TotalAlerts : count
+		});
+	}).catch(err => {
+		return res.status(500).send({
+			ERROR: err.message || "Some error occurred while retrieving alerts."
+		});
+	});
+}
+
 // Retrieve and return all alerts from the database.
 exports.find = (req, res) => {
 	var Qlimit = parseInt(req.query.limit);
 	if (isNaN(Qlimit)){
 		Qlimit = 10;
 	}
+	var skipnum = parseInt(req.query.skip);
+	if (isNaN(skipnum)){
+		skipnum = 0;
+	}
+
 	var find_file = "";
 	if (req.query.file == undefined){
 		find_file = "+file";
 	}else{
 		find_file = "-file";
 	}
-	Alert.find({}, null, {limit: Qlimit}).select(find_file)
+	Alert.find({},{},{ sort:{ 'createdAt' : -1 }, limit: Qlimit, skip: skipnum }).select(find_file)
 	.then(alerts => {
 		return res.send(alerts);
 	}).catch(err => {
 		return res.status(500).send({
-			message: err.message || "Some error occurred while retrieving alerts."
+			ERROR: err.message || "Some error occurred while retrieving alerts."
 		});
 	});
 	

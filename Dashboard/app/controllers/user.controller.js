@@ -43,6 +43,26 @@ exports.singup = (req, res) => {
 };
 
 
+//Get total number of users
+exports.count = (req, res) => {
+	// Validate request
+	if (res.locals.authlevel != 0){
+		return res.status(400).send({
+			ERROR: 'Not authorized!'
+		});
+	}
+	User.count().then(count => {
+		return res.status(200).send({
+			TotalUsers : count
+		});
+	}).catch(err => {
+		return res.status(500).send({
+			ERROR: err.message || "Some error occurred while retrieving users."
+		});
+	});
+}
+
+
 // Retrieve and return all alerts from the database.
 exports.find = (req, res) => {
 	// Validate request
@@ -55,7 +75,12 @@ exports.find = (req, res) => {
 	if (isNaN(Qlimit)){
 		Qlimit = 10;
 	}
-	User.find({}, null, {limit: Qlimit})
+	var skipnum = parseInt(req.query.skip);
+	if (isNaN(skipnum)){
+		skipnum = 0;
+	}
+
+	User.find({}, null, {limit: Qlimit, skip: skipnum})
 	.then(users => {
 		return res.send(users);
 	}).catch(err => {
@@ -75,6 +100,20 @@ exports.login = (req, res) => {
 		});
 	  } else {
 		req.session.userId = user._id;
+		//Update last-seen
+		// User.findByIdAndUpdate(user._id,{lastSeen: new Date()})
+		// .exec(function (error, usr) {
+		//   if (error) {
+		// 	return res.status(500).send({
+		// 		ERROR: 'Something went wrong'
+		// 	});
+		//   } else if (usr === null) {
+		//   	return res.status(400).send({
+		// 		ERROR: 'Not authorized!'
+		// 	});
+		// }
+		// });
+		//Update last-seen*
 		return res.redirect('/');
 	  }
 	});
@@ -134,9 +173,10 @@ exports.logout = (req, res) => {
 					ERROR: 'Something went wrong'
 				});
 			} else {
-				return res.status(200).send({
-				message: "Logged out" 
-				});
+				res.redirect('/pages/login.html');
+				// return res.status(200).send({
+				// message: "Logged out" 
+				// });
 			}
 		});
 	}
