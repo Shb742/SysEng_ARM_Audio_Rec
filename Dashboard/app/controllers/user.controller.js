@@ -23,7 +23,7 @@ exports.singup = (req, res) => {
 		User.create(userData, function (error, user) {
 		  if (error) {
 			return res.status(400).send({
-				message: 'ERROR : '+error
+				ERROR : ''+error
 			});
 		  } else {
 			// req.session.userId = user._id;
