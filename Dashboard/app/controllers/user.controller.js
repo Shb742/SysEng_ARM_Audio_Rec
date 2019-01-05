@@ -114,7 +114,7 @@ exports.login = (req, res) => {
 		// }
 		// });
 		//Update last-seen*
-		return res.redirect('/');
+		return res.redirect('/pages/index.html');
 	  }
 	});
 };

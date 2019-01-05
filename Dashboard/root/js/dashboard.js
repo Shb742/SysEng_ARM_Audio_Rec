@@ -3,6 +3,17 @@ var table;
 var latestAlert;
 const maxAlerts = 100;
 
+
+function escapeHtml(unsafe) {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
+
+
 function playAudio(elem){ 
     if (elem.audio != undefined) {
 
@@ -41,13 +52,15 @@ function playAudio(elem){
 
 
 function updateAlerts(first_update){
-   // if ((page_num * alertsPerPage)<totalAlerts){ //+"&skip="+(page_num*alertsPerPage))
         var jqxhr = $.getJSON( "/api/alerts/?file=none&limit="+maxAlerts)
           .done(function(json) {
-            var latest = tableRef.rows[0].cells[0].innerText;
+            var latest = table.rows( { order: [ 3, "desc" ] } ).row(0).data();
+            if (latest != undefined){
+                latest = latest[0];
+            }
             while ((json.length > 0) && (first_update || (json[0]["_id"] != latest))) {
                 var item = json.shift();
-                table.row.add([item["_id"],item["content"],item["location"],new Date(item["createdAt"]).toString(),"<a style='font-size: 100%;cursor: pointer;' first='"+first_update+"' idd='"+item["_id"]+"' class='fa fa-play' onclick='playAudio(this)'></a>"]);
+                table.row.add([item["_id"],"<pre>"+escapeHtml(item["content"])+"</pre>","<pre>"+escapeHtml(item["location"])+"</pre>" ,new Date(item["createdAt"]).toString(),"<a style='font-size: 100%;cursor: pointer;' first='"+first_update+"' idd='"+item["_id"]+"' class='fa fa-play' onclick='playAudio(this)'></a>"]);
             }
             table.draw();
           })
@@ -55,7 +68,6 @@ function updateAlerts(first_update){
             alert(err.responseText);
             window.location.replace("/pages/login.html");
         });
-    //}
     
 }
 
@@ -73,13 +85,8 @@ function checkForAlerts(first_update){
             },
             responsive: true,
             autoWidth: true,
-            order: [[ 3, "desc" ]],
-            columnDefs: [ {
-                "targets": [0,1,2,3,4],
-                "orderable": false
-                } ]
+            order: [[ 3, "desc" ]]
         });
-        //alertsPerPage = table.page.info()["length"];
         updateAlerts(first_update);
     }else{
         var newXhr = $.getJSON( "/api/alerts/?file=none&limit=1")
@@ -98,7 +105,7 @@ function checkForAlerts(first_update){
 
  $(document).ready(function() {
     checkForAlerts(true);
-    setInterval(function(){checkForAlerts(false); }, 30000);//check for new alerts every half-minute 30000
+    setInterval(function(){checkForAlerts(false); }, 15000);//check for new alerts every quarter-minute 15000
     
 });
 
