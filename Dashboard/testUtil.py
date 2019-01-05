@@ -59,7 +59,7 @@ while (1):
 	elif (option == 2):
 		fileName = raw_input("file name:")
 		data = base64.b64encode(open(fileName, "rb").read())
-		post_fields = {'content': 'bar','file':data}     # Set POST fields here 
+		post_fields = {'content': raw_input("interpretted_text:"),'file':data}     # Set POST fields here
 		r = requests.post(url = (url+api).replace("<replace>",""), data = post_fields, verify=False) 
 		print r.content
 	elif (option == 1):

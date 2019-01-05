@@ -5,7 +5,7 @@ const maxAlerts = 100;
 
 
 function escapeHtml(unsafe) {
-    return unsafe
+    return decodeURI(unsafe)
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
          .replace(/>/g, "&gt;")
