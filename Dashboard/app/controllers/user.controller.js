@@ -46,6 +46,7 @@ exports.singup = (req, res) => {
 //Get total number of users
 exports.count = (req, res) => {
 	// Validate request
+	//countDocuments()
 	if (res.locals.authlevel != 0){
 		return res.status(400).send({
 			ERROR: 'Not authorized!'
