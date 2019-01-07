@@ -60,7 +60,7 @@ function updateAlerts(first_update){
             }
             while ((json.length > 0) && (first_update || (json[0]["_id"] != latest))) {
                 var item = json.shift();
-                table.row.add([item["_id"],"<pre>"+escapeHtml(item["content"])+"</pre>","<pre>"+escapeHtml(item["location"])+"</pre>" ,new Date(item["createdAt"]).toString(),"<a style='font-size: 100%;cursor: pointer;' first='"+first_update+"' idd='"+item["_id"]+"' class='fa fa-play' onclick='playAudio(this)'></a>"]);
+                table.row.add([item["_id"],"<pre>"+escapeHtml(item["content"])+"</pre>","<pre>"+escapeHtml(item["location"])+"</pre>" ,new Date(item["createdAt"]),"<a style='font-size: 100%;cursor: pointer;' first='"+first_update+"' idd='"+item["_id"]+"' class='fa fa-play' onclick='playAudio(this)'></a>"]);
             }
             table.draw();
           })
