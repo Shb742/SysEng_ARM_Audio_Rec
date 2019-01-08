@@ -54,13 +54,21 @@ function playAudio(elem){
 function updateAlerts(first_update){
         var jqxhr = $.getJSON( "/api/alerts/?file=none&limit="+maxAlerts)
           .done(function(json) {
-            var latest = table.rows( { order: [ 3, "desc" ] } ).row(0).data();
-            if (latest != undefined){
-                latest = latest[0];
+            //find index of newest current one
+            var latest = "";
+            var start = true;
+            if (!first_update && (tableRef.rows.length != 0)) {
+                var latest = $(table.rows( { order: "index" } ).data().reverse()[0][0])[0].innerText;
+                start = false;
             }
-            while ((json.length > 0) && (first_update || (json[0]["_id"] != latest))) {
-                var item = json.shift();
-                table.row.add([item["_id"],"<pre>"+escapeHtml(item["content"])+"</pre>","<pre>"+escapeHtml(item["location"])+"</pre>" ,new Date(item["createdAt"]),"<a style='font-size: 100%;cursor: pointer;' first='"+first_update+"' idd='"+item["_id"]+"' class='fa fa-play' onclick='playAudio(this)'></a>"]);
+
+            while (json.length > 0) {
+                var item = json.pop();
+                if (start){
+                    table.row.add([ "<p first='"+first_update+"' >"+item["_id"]+"</p>","<pre>"+escapeHtml(item["content"])+"</pre>","<pre>"+escapeHtml(item["location"])+"</pre>" ,new Date(item["createdAt"]),"<a style='font-size: 100%;cursor: pointer;' idd='"+item["_id"]+"' class='fa fa-play' onclick='playAudio(this)'></a>"]);
+                }else if(item["_id"] == latest){
+                    start = true;
+                }
             }
             table.draw();
           })
@@ -77,7 +85,7 @@ function checkForAlerts(first_update){
         //set up alerts table
         table = $('#Alerts').DataTable({
             "createdRow": function(row, data, dataIndex) {
-                if ( $(row.cells[4].children[0]).attr("first") == "false" ){
+                if ( $(row.cells[0].children[0]).attr("first") == "false" ){
                     $(row).attr('class',"highlight");
                 }
                 $(row).attr('style',"text-align: center;vertical-align: middle;");
@@ -85,13 +93,14 @@ function checkForAlerts(first_update){
             },
             responsive: true,
             autoWidth: true,
+            scrollX: true,
             order: [[ 3, "desc" ]]
         });
         updateAlerts(first_update);
     }else{
         var newXhr = $.getJSON( "/api/alerts/?file=none&limit=1")
         .done(function(json) {
-            if (json[0]["_id"] != tableRef.rows[0].cells[0].innerText) {
+            if (json[0]["_id"] != $(table.rows( { order: "index" } ).data().reverse()[0][0])[0].innerText) {
                 updateAlerts(first_update);
             }
 
@@ -103,11 +112,16 @@ function checkForAlerts(first_update){
     }
 }
 
- $(document).ready(function() {
+function documentReady(){
+    checkForAlerts(true);
+    setInterval(function(){checkForAlerts(false); }, 15000);//check for new alerts every quarter-minute 15000
+}
+
+ /*$(document).ready(function() {
     checkForAlerts(true);
     setInterval(function(){checkForAlerts(false); }, 15000);//check for new alerts every quarter-minute 15000
     
-});
+});*/
 
 
 
