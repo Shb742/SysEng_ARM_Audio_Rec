@@ -96,6 +96,7 @@ function checkForAlerts(first_update){
             scrollX: true,
             order: [[ 3, "desc" ]]
         });
+        table.column(0).visible(false);
         updateAlerts(first_update);
     }else{
         var newXhr = $.getJSON( "/api/alerts/?file=none&limit=1")
