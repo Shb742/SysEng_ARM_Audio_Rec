@@ -31,6 +31,7 @@ pre_threshold_audio_legnth = 0.5  #The ammount of time(in seconds) before the th
 threshold = 400 #Audio intensity to trigger recording of phrase
 decoder = None #Placeholder
 
+#Set up dashboard communication script
 dashboard.channels = channels
 dashboard.sample_rate = sample_rate
 
@@ -61,9 +62,9 @@ def setAudioThreshold(num_samples=50):
 	print(" Average audio intensity is ", r)
 
 	if r < 3000:
-		threshold = 3500 #sets upperlimit
+		threshold = 3500 #sets upper-limit
 	else:
-		threshold = r + 150 #adds offset to avoid flase triggering
+		threshold = r + 150 #adds offset to avoid false triggering
 
 def decode_phrase(data):
 	global decoder
@@ -116,8 +117,8 @@ def run():
 			r = decode_phrase(list(pre_threshold_audio) + audio2send)
 			if (len(r) > 0 and ( True in [ "help" in x for x in r] )):
 				dashboard.send((list(pre_threshold_audio) + audio2send),r )
-				stream.read(1024*6)#get rid of old data ~0.01066666667s
-			print("DETECTED: ", r)
+				stream.read(1024*6)#get rid of old data ~0.01066666667s, in future look into calculating how much data to discard.
+			#print("DETECTED: ", r)
 			#Reset all
 			started = False
 			slid_win = deque(maxlen= int(silence_lenght * rel) )
