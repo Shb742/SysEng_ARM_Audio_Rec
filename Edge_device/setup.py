@@ -1,7 +1,7 @@
 import os
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
-os.system("sudo apt install -y libatlas-base-dev python3 python3-dev python3-pip build-essential swig git libpulse-dev libasound2-dev python3-pyaudio sox")
+os.system("sudo apt install -y bison libtool autoconf automake libatlas-base-dev python3 python3-dev python3-pip build-essential swig git libpulse-dev libasound2-dev python3-pyaudio sox")
 os.system("sudo pip3 install -r requirements.txt")
 env="""SERVER_URL=<server>
 USERNAME=<user>
