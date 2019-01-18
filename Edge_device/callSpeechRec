@@ -1,1 +1,0 @@
-arecord  -D sysdefault:CARD=1 -v -f S16_LE -c1 -r48000 -t raw | sox -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - vol -1 dB |./remove_noise /dev/stdout | sox -t raw -r 48000 -b 16 -c 1 -L -e signed-integer - -t raw -r 16000 -b 16 -c 1 -L -e signed-integer - | python3 SpeechDetect3.py

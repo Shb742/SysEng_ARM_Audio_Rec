@@ -1,0 +1,1 @@
+arecord -v -f S16_LE -c1 -r48000 -t raw | sox -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - -c 1 -r 48000 -b 16 -L -e signed-integer -t raw - vol -1 dB | python3 MainInternalVAD.py

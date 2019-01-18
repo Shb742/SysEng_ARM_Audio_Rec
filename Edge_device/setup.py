@@ -1,4 +1,5 @@
 import os
+startup_script = "start"
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
 os.system("sudo apt install -y bison libtool autoconf automake libatlas-base-dev python3 python3-dev python3-pip build-essential swig git libpulse-dev libasound2-dev python3-pyaudio sox")
@@ -25,12 +26,13 @@ input("press enter to conitnue")
 
 os.system("sudo chmod +x compile;")
 os.system("./compile remove_noise.c")
+os.system("./compile remove_noise_VAProb.c")#For testing purposes
 input("press enter to conitnue")
 
 os.system("tar -xvf pocketsphinx-5prealpha.tar; tar -xvf sphinxbase-5prealpha.tar; mv sphinxbase-5prealpha sphinxbase;")
 os.system("cd sphinxbase; sudo ./autogen.sh; sudo ./configure; sudo make ; sudo make install")
 os.system("cd pocketsphinx-5prealpha; sudo ./autogen.sh; sudo ./configure; sudo make clean all ; sudo make install")
-os.system("sudo chmod +x callSpeechRec")
+os.system("sudo chmod +x "+startup_script)
 input("press enter to conitnue")
 
 
@@ -41,7 +43,7 @@ APP_NAME="EDVS"
 USER="root"
 GROUP="$USER"
 APP_DIR="~path~"
-APP="callSpeechRec"
+APP="~script~"
 KWARGS=""
 PID_DIR="$APP_DIR/pid"
 PID_FILE="$PID_DIR/$APP_NAME.pid"
@@ -213,7 +215,7 @@ case "$1" in
         exit 1
     ;;
 esac"""
-initdScript = initdScript.replace("~path~",dir_path)
+initdScript = initdScript.replace("~path~",dir_path).replace("~script~",startup_script)
 initdScriptLocation = "/etc/init.d/EDVS"
 try:
     initdScriptFile = open(initdScriptLocation,"w")
