@@ -1,8 +1,10 @@
 import ctypes,numpy
 from ctypes import util
 lib = ctypes.cdll.LoadLibrary(util.find_library("rnnoise"))
-lib.rnnoise_process_frame.restype = ctypes.c_float
 lib.rnnoise_process_frame.argtypes = [ctypes.c_void_p,ctypes.POINTER(ctypes.c_float),ctypes.POINTER(ctypes.c_float)]
+lib.rnnoise_process_frame.restype = ctypes.c_float
+lib.rnnoise_create.restype = ctypes.c_void_p
+
 class RNNoise(object):
 	def __init__(self):
 		self.obj = lib.rnnoise_create()
