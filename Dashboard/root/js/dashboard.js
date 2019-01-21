@@ -14,7 +14,7 @@ function escapeHtml(unsafe) {
  }
 
 
-function playAudio(elem){ 
+function playAudio(elem){
     if (elem.audio != undefined) {
 
         if($(elem).hasClass('fa-play'))

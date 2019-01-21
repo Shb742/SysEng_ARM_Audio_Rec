@@ -8,7 +8,7 @@ env="""SERVER_URL=<server>
 USERNAME=<user>
 PASSWORD=<password>
 LOCATION=<location>"""
-env = env.replace("<server>",input("server address (eg - https://127.0.0.1) :")).replace("<user>",input("user name(eg - test) :")).replace("<password>",input("password(eg - test@test) :")).replace("<location>",input("location :"))
+env = env.replace("<server>",(input("server address (eg - https://127.0.0.1) :") or "https://127.0.0.1") ).replace("<user>",(input("user name(eg - test) :")or"test") ).replace("<password>", (input("password(eg - test@test) :") or "test@test") ).replace("<location>",(input("location :") or "undefined") ) 
 
 try:
     envFile = open(dir_path+"/.env","w")
@@ -215,19 +215,23 @@ case "$1" in
         exit 1
     ;;
 esac"""
-initdScript = initdScript.replace("~path~",dir_path).replace("~script~",startup_script)
-initdScriptLocation = "/etc/init.d/EDVS"
-try:
-    initdScriptFile = open(initdScriptLocation,"w")
-    initdScriptFile.write(initdScript)
-    initdScriptFile.close()
-except IOError as e:
-    if (e[0] == errno.EPERM):
-        print("Error run as root")
-        sys.exit(1)
-os.system("sudo chmod 755 "+initdScriptLocation)
-os.system("sudo chown root:root "+initdScriptLocation)
-os.system("sudo update-rc.d "+initdScriptLocation.split("/")[-1]+" defaults")
-print("Registered script with rc.d.....")
-os.system("sudo "+initdScriptLocation+" start")
-print("USAGE: sudo /etc/init.d/EDVS (start|stop|restart|status)")
+if ( (input("setup initid (default yes):") or "yes").find("y") != -1  ):
+    initdScript = initdScript.replace("~path~",dir_path).replace("~script~",startup_script)
+    initdScriptLocation = "/etc/init.d/EDVS"
+    try:
+        initdScriptFile = open(initdScriptLocation,"w")
+        initdScriptFile.write(initdScript)
+        initdScriptFile.close()
+    except IOError as e:
+        if (e[0] == errno.EPERM):
+            print("Error run as root")
+            sys.exit(1)
+    os.system("sudo chmod 755 "+initdScriptLocation)
+    os.system("sudo chown root:root "+initdScriptLocation)
+    os.system("sudo update-rc.d "+initdScriptLocation.split("/")[-1]+" defaults")
+    print("Registered script with rc.d.....")
+    os.system("sudo "+initdScriptLocation+" start")
+    print("USAGE: sudo /etc/init.d/EDVS (start|stop|restart|status)")
+
+print("Done")
+
