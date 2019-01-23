@@ -1,17 +1,19 @@
 import os
+
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
 
-
-env="""SERVER_URL=<server>
+env: str = """SERVER_URL=<server>
 MONGODB_URI=<mongo>
 ADMIN_TOKEN=DEFAULT@Admin123ToKen0qekksd2
 SESSION_SECRET=ExampleSecretOOOO.O-.-_-:):(:
 """
-env = env.replace("<server>",input("server address (eg - https://localhost) :")).replace("<mongo>",input("mongodb address(eg - mongodb://localhost:27017/dashboard) :"))
-
+env = env.replace("<server>", (input("server address (default: https://localhost) :")
+                               or "https://localhost"))
+env = env.replace("<mongo>", (input("mongodb address (default: mongodb://localhost:27017/dashboard) :")
+                              or "mongodb://localhost:27017/dashboard"))
 try:
-    envFile = open(".env","w")
+    envFile = open(".env", "w")
     envFile.write(env)
     envFile.close()
 except IOError as e:
@@ -20,10 +22,8 @@ except IOError as e:
         print("Error run as root")
         sys.exit(1)
 
-
-
-os.system("sudo chmod +x "+dir_path+"/setup/setup.sh")
-os.system("sudo "+dir_path+"/setup/./setup.sh")#install mongodb and npm dependancies
+os.system("sudo chmod +x " + dir_path + "/setup/setup.sh")
+os.system("sudo " + dir_path + "/setup/./setup.sh")  # install mongodb and npm dependancies
 input("press enter to conitnue")
 
 initdScript = """#!/bin/sh
@@ -205,18 +205,18 @@ case "$1" in
         exit 1
     ;;
 esac"""
-initdScript = initdScript.replace("~path~",dir_path)
+initdScript = initdScript.replace("~path~", dir_path)
 initdScriptLocation = "/etc/init.d/EdvsDashboard"
 try:
-    initdScriptFile = open(initdScriptLocation,"w")
+    initdScriptFile = open(initdScriptLocation, "w")
     initdScriptFile.write(initdScript)
     initdScriptFile.close()
 except IOError as e:
     if (e[0] == errno.EPERM):
         print("Error run as root")
         sys.exit(1)
-os.system("sudo chmod 755 "+initdScriptLocation)
-os.system("sudo chown root:root "+initdScriptLocation)
-os.system("sudo update-rc.d "+initdScriptLocation.split("/")[-1]+" defaults")
-os.system("sudo "+initdScriptLocation+" start")
+os.system("sudo chmod 755 " + initdScriptLocation)
+os.system("sudo chown root:root " + initdScriptLocation)
+os.system("sudo update-rc.d " + initdScriptLocation.split("/")[-1] + " defaults")
+os.system("sudo " + initdScriptLocation + " start")
 print("USAGE: sudo /etc/init.d/EdvsDashboard (start|stop|restart|status)")
