@@ -61,7 +61,7 @@ def login(force=False):
 	if (force or ((time.time()-last_login) > 1800.0) ):# if last login was more than 30 mins ago login again
 		post_fields = {'username': userName,'password':password}   
 		try:
-			r = session.post(url = url+"/login", data = post_fields, verify=False)
+			r = session.post(url = url+"/login", data = post_fields, verify=False, timeout=10)
 			print("logged in")
 			last_login = time.time()
 		except:
@@ -78,14 +78,14 @@ def ping():
 			login()
 			try:
 				print("pinging.....")
-				r = session.get(url = url+"/ping", verify=False)
+				r = session.get(url = url+"/ping", verify=False, timeout=10)
 				resp = r.content.decode("utf-8") 
 				print("here")
 				print(resp)
 				if (not('Success' in json.loads(resp))):
 					print("ping-retrying...")
 					login(True)
-					r = session.get(url = url+"/ping", verify=False)
+					r = session.get(url = url+"/ping", verify=False, timeout=10)
 			except:
 				pass#Fail silently
 		time.sleep(300)#ping every 5 mins
@@ -102,12 +102,12 @@ def send(data,text):
 		text = ' '.join(text).replace("<s>","").replace("</s>","").replace("<","").replace(">","")
 		post_fields = {'content': text ,'file':encode_speech(data),'type':'data:audio/wav;base64,', 'location':location}     # Set POST fields here
 		try:
-			r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False) 
+			r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False, timeout=100) 
 			#Retry one time if post failed (i.e session destroyed)
 			if (not('Success' in json.loads(r.content.decode("utf-8")))):
 				print("retrying.....")
 				login(True)
-				r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False) 
+				r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False, timeout=100) 
 			#Retry one time if post failed (i.e session destroyed)*
 			print(r.content)
 		except:

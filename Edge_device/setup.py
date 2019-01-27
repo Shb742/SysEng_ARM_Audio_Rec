@@ -24,9 +24,9 @@ os.system("sudo apt install -y unzip; unzip rnnoise-master.zip;")
 os.system("cd rnnoise-master; sudo ./autogen.sh;sudo ./configure; sudo make install;")
 input("press enter to conitnue")
 
-os.system("sudo chmod +x compile;")
-os.system("./compile remove_noise.c")
-os.system("./compile remove_noise_VAProb.c")#For testing purposes
+#os.system("sudo chmod +x compile;")
+#os.system("./compile remove_noise.c")
+#os.system("./compile remove_noise_VAProb.c")#For testing purposes
 input("press enter to conitnue")
 
 os.system("tar -xvf pocketsphinx-5prealpha.tar; tar -xvf sphinxbase-5prealpha.tar; mv sphinxbase-5prealpha sphinxbase;")
