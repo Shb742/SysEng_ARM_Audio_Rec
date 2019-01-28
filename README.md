@@ -4,4 +4,4 @@ EDVS (Emergency Detection using Vocal Signals) is a system that is designed to g
 
 ## License
 
-See the [LICENSE](LICENSE.txt) file for license rights and limitations (GNU Affero General Public License v3.0).
+See the [LICENSE](LICENSE) file for license rights and limitations (GNU Affero General Public License v3.0).
