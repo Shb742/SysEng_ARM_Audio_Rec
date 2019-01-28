@@ -119,7 +119,7 @@ function updateUserStatus() {
     let userTable = $('#Users').DataTable();
 
     // Fetch json file containing user data, but omitting passwords
-    let userList = $.getJSON("/listusers?password=none")
+    let userList = $.getJSON("/listdevices")
         .done(function (list) {
             while (list.length > 0) {
                 let item = list.pop();

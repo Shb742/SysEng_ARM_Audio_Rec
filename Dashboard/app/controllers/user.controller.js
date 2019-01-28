@@ -64,7 +64,29 @@ exports.count = (req, res) => {
 }
 
 
-// Retrieve and return all alerts from the database.
+// Retrieve and return users from the database.
+exports.findDevices = (req, res) => {
+	// Validate request
+	var Qlimit = parseInt(req.query.limit);
+	if (isNaN(Qlimit)){
+		Qlimit = 10;
+	}
+	var skipnum = parseInt(req.query.skip);
+	if (isNaN(skipnum)){
+		skipnum = 0;
+	}
+
+	User.find({"authlevel":1}, null, {limit: Qlimit, skip: skipnum})
+	.then(users => {
+		return res.send(users);
+	}).catch(err => {
+		return res.status(500).send({
+			message: err.message || "Some error occurred while retrieving alerts."
+		});
+	});
+};
+
+// Retrieve and return users from the database.
 exports.find = (req, res) => {
 	// Validate request
 	if (res.locals.authlevel != 0){
@@ -91,7 +113,7 @@ exports.find = (req, res) => {
 	});
 };
 
-// Retrieve and return all alerts from the database.
+// login
 exports.login = (req, res) => {
 	sanitize(req.body);
 	User.authenticate(req.body.username, req.body.password, function (error, user) {
@@ -141,7 +163,7 @@ exports.login = (req, res) => {
 // };
 
 
-// Allow updating of user password
+// Update last seen
 exports.ping = (req, res) => {
 	User.findByIdAndUpdate(req.session.userId,{lastSeen: new Date()})
 	.exec(function (error, user) {

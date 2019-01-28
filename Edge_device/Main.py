@@ -8,9 +8,6 @@ https://cmusphinx.github.io/wiki/tutoriallm/#using-keyword-lists-with-pocketsphi
 https://cmusphinx.github.io/wiki/tutorialdict/
 """
 
-from pocketsphinx.pocketsphinx import *
-from sphinxbase.sphinxbase import *
-
 import audioop
 from collections import deque
 import time
