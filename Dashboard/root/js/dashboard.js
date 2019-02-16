@@ -46,7 +46,7 @@ function playAudio(elem){
             alert(err.responseText);
             window.location.replace("/pages/login.html");
         });
-       
+
     }
 }
 
@@ -76,7 +76,7 @@ function updateAlerts(first_update){
             alert(err.responseText);
             window.location.replace("/pages/login.html");
         });
-    
+
 }
 
 //change this will not work when operating at alert limit (change to get newest alert and compare ids)
@@ -113,7 +113,38 @@ function checkForAlerts(first_update){
     }
 }
 
+function updateUserStatus() {
+
+    // Initialise a DataTable object
+    let userTable = $('#Users').DataTable();
+
+    // Fetch json file containing user data, but omitting passwords
+    let userList = $.getJSON("/listdevices")
+        .done(function (list) {
+            while (list.length > 0) {
+                let item = list.pop();
+                // If current time is less than 5 min (300000 ms) from last seen time, then it counts as ONLINE.
+                let isOnline = Date.now() - new Date(item["lastSeen"]) < 300000;
+                userTable.row.add([
+                    item["username"],
+                    isOnline ? "online" : "offline",
+                    item["lastSeen"]
+                ]);
+            }
+            userTable.draw(false);
+        })
+        // In case the .done branch fails
+        .fail(function (err) {
+            alert(err.responseText);
+            window.location.replace("/pages/login.html");
+        });
+}
+
 function documentReady(){
     checkForAlerts(true);
-    setInterval(function(){checkForAlerts(false); }, 15000);//check for new alerts every quarter-minute 15000
+    updateUserStatus();
+    setInterval(function(){
+        checkForAlerts(false);
+        }, 15000); //check for new alerts every 15 seconds
+
 }

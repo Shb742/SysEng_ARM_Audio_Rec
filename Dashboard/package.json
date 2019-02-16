@@ -1,17 +1,30 @@
 {
-  "name": "dashboard",
-  "version": "1.0.0",
-  "description": "UCL COMP0016 ARM/GOSH",
+  "name": "edvs-dashboard",
+  "version": "1.0.1",
+  "description": "UCL COMP0016 ARM/GOSH Project Dashboard",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Shb742/SysEng_ARM_Audio_Rec.git"
+    "url": "https://github.com/Shb742/SysEng_ARM_Audio_Rec.git"
   },
-  "author": "",
-  "license": "ISC",
+  "contributor": [
+    {
+      "name": "Shoaib Omar",
+      "url": "https://github.com/Shb742"
+    },
+    {
+      "name": "Longxi Yin",
+      "url": "https://github.com/dragonxi"
+    },
+    {
+      "name": "Kimia Pirouzkia",
+      "url": "https://github.com/kimia84"
+    }
+  ],
+  "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/Shb742/SysEng_ARM_Audio_Rec/issues"
   },

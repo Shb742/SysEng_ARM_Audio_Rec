@@ -14,6 +14,9 @@ module.exports = (app) => {
 	// List All Users
 	app.get('/listusers', [auth.checkAuth,users.find]); 
 
+	// List Devices
+	app.get('/listdevices', [auth.checkAuth,users.findDevices]); 
+
 	// Ping
 	app.get('/ping', [auth.checkAuth,users.ping]);
 

@@ -1,21 +1,23 @@
 import requests,json,base64,time
-import wave,io,pyaudio
+import wave,io
 import threading
+
+#Disable warning about https certificates
+try:
+	from requests.packages.urllib3.exceptions import InsecureRequestWarning
+	requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+except Exception:
+	pass
+
 
 #Load env vars
 env_vars = {}
-with open(".env") as f:
-	for line in f:
+with open(".env") as env_file:
+	for line in env_file:
 		if line.startswith('#'):
 			continue
-		# if 'export' not in line:
-		#     continue
-		# Remove leading `export `, if you have those
-		# then, split name / value pair
-		# key, value = line.replace('export ', '', 1).strip().split('=', 1)
 		key, value = line.strip().split('=', 1)
-		# os.environ[key] = value  # Load to local environ
-		env_vars[key] = value # Save to a list
+		env_vars[key] = value
 #Load env vars*
 
 userName = (env_vars["USERNAME"] if ("USERNAME" in env_vars) else "test")
@@ -23,12 +25,12 @@ password = (env_vars["PASSWORD"] if ("PASSWORD" in env_vars) else "test@test")
 location = (env_vars["LOCATION"] if ("LOCATION" in env_vars) else "UNKWN")
 
 session = requests.Session()
-url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "http://localhost:3000")
+url = (env_vars["SERVER_URL"] if ("SERVER_URL" in env_vars) else "https://localhost")
 last_login = 0
 
 channels = 1
 sample_rate = 16000
-
+sample_width = 2
 # lock to serialize console output
 lock = threading.Lock()
 
@@ -37,12 +39,13 @@ def encode_speech(data):
 	#globals
 	global channels
 	global sample_rate
+	global sample_width
 	#globals*
-	data = b''.join(data)[:11796400]#Save Only first ~15Mb(once base64 encoded)
+	data = data[:11796400]#Save Only first ~15Mb(once base64 encoded)
 	buf = io.BytesIO()
 	wf = wave.open(buf, 'wb')
 	wf.setnchannels(channels)
-	wf.setsampwidth(pyaudio.PyAudio().get_sample_size(pyaudio.paInt16))
+	wf.setsampwidth(sample_width)
 	wf.setframerate(sample_rate) 
 	wf.writeframes(data)
 	wf.close()

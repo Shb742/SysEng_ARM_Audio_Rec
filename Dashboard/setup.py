@@ -91,7 +91,7 @@ start_it() {
           exit
         fi
         set -a
-        $NODE_EXEC \"$APP_DIR\"/$NODE_APP $KWARGS &> \"$LOG_FILE\" &
+        sudo $NODE_EXEC \"$APP_DIR\"/$NODE_APP $KWARGS &> \"$LOG_FILE\" &
         echo \$! > $PID_FILE" | sudo -i -u $USER
     echo "$APP_NAME started with pid $(get_pid)"
 }
