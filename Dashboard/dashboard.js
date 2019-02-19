@@ -1,7 +1,7 @@
-var tableRef = document.getElementById('Alerts').getElementsByTagName('tbody')[0];
-var table;
-var latestAlert;
-const maxAlerts = 100;
+// var tableRef = document.getElementById('Alerts').getElementsByTagName('tbody')[0];
+// var table;
+// var latestAlert;
+// const maxAlerts = 100;
 
 
 function escapeHtml(unsafe) {
@@ -57,7 +57,8 @@ function updateAlerts(first_update){
             //find index of newest current one
             var latest = "";
             var start = true;
-            if (!first_update && (tableRef.rows.length != 0)) {
+            var leng = tableRef.rows.length;
+            if (!first_update && (leng != 0)) {
                 var latest = table.rows( { order: "index" } ).data().reverse()[0][0];//$(table.rows( { order: "index" } ).data().reverse()[0][0])[0].innerText;
                 start = false;
             }
@@ -76,7 +77,7 @@ function updateAlerts(first_update){
             alert(err.responseText);
             window.location.replace("/pages/login.html");
         });
-
+        return leng;
 }
 
 //change this will not work when operating at alert limit (change to get newest alert and compare ids)
@@ -85,7 +86,9 @@ function checkForAlerts(first_update){
         //set up alerts table
         table = $('#Alerts').DataTable({
             "createdRow": function(row, data, dataIndex) {
-                if ( $(row.cells[1].children[0]).attr("first") == "false" ){
+              var first_row = row.cells[1].children[0];
+              var second_row = row.cells[2].children[0];
+                if ( $(first_row).attr("first") == "false" ){
                     $(row).attr('class',"highlight");
                 }
                 $(row).attr('style',"text-align: center;vertical-align: middle;");
@@ -111,6 +114,12 @@ function checkForAlerts(first_update){
                 window.location.replace("/pages/login.html");
         });
     }
+    // return leng;
+    return {
+      first_row: first_row,
+      second_row: second_row
+    };
+
 }
 
 function updateUserStatus() {
@@ -138,6 +147,8 @@ function updateUserStatus() {
             alert(err.responseText);
             window.location.replace("/pages/login.html");
         });
+
+        return userTable;
 }
 
 function documentReady(){
@@ -148,3 +159,11 @@ function documentReady(){
         }, 15000); //check for new alerts every 15 seconds
 
 }
+module.exports= {
+  escapeHtml: escapeHtml,
+  playAudio: playAudio,
+  updateAlerts: updateAlerts,
+  documentReady: documentReady,
+  updateUserStatus: updateUserStatus,
+  checkForAlerts: checkForAlerts,
+};

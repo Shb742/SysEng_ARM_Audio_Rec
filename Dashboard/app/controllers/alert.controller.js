@@ -16,14 +16,14 @@ exports.create = (req, res) => {
 
 	// Create an alert
 	const alert = new Alert({
-		content: escape(req.body.content) || "example", 
+		content: escape(req.body.content) || "example",
 		type: req.body.type || "data:audio/wav;base64,",
 		location: escape(req.body.location) || "Unspecified",
 		file: escape(req.body.file)
 	});
 
 	// console.log(alert._id); -- maybe push update to webpage
-	
+
 	// Save Alert in the database
 	alert.save()
 	.then(data => {
@@ -78,7 +78,7 @@ exports.find = (req, res) => {
 			ERROR: err.message || "Some error occurred while retrieving alerts."
 		});
 	});
-	
+
 };
 
 // Find a single alert with a alertId
@@ -94,14 +94,14 @@ exports.findOne = (req, res) => {
 		if(!alert) {
 			return res.status(404).send({
 				message: "Note not found with id " + req.params.alertId
-			});            
+			});
 		}
 		return res.send(alert);
 	}).catch(err => {
 		if(err.kind === 'ObjectId') {
 			return res.status(404).send({
 				message: "Alert not found with id " + req.params.alertId
-			});                
+			});
 		}
 		return res.status(500).send({
 			message: "Error retrieving alert with id " + req.params.alertId
@@ -130,7 +130,7 @@ exports.delete = (req, res) => {
 		if(err.kind === 'ObjectId' || err.name === 'NotFound') {
 			return res.status(404).send({
 				message: "Alert not found with id " + req.params.alertId
-			});                
+			});
 		}
 		return res.status(500).send({
 			message: "Could not delete alert with id " + req.params.alertId
