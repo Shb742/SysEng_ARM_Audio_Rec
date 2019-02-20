@@ -148,9 +148,10 @@ def main():
 					audio2send = audio2send[int(len(audio2send)-pre_threshold_audio_legnth):]#Keep bit of previous segment
 			elif started:
 				print("* Finished recording, decoding phrase")
-				tmp = adjustVolume(b''.join(list(pre_threshold_audio)+audio2send))#should be in full 3 second clip
-				tmp,resampler_state = audioop.ratecv(tmp,input_sample_width,channels,input_sample_rate,sample_rate,resampler_state)
-				decoder_queue.put(tmp)
+				if ((len(audio2send)+len(pre_threshold_audio))>0):
+					tmp = adjustVolume(b''.join(list(pre_threshold_audio)+audio2send))#should be in full 3 second clip
+					tmp,resampler_state = audioop.ratecv(tmp,input_sample_width,channels,input_sample_rate,sample_rate,resampler_state)
+					decoder_queue.put(tmp)
 				#Reset all
 				started = False
 				#slid_win.clear()
