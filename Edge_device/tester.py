@@ -60,8 +60,8 @@ def adjustVolume(fragment,new_vol):
 			vol = getVolume(fragment)
 	#print(" new vol :"+str(vol))
 	return fragment
-import os
 
+import os
 def getWavs(dirName):
 	listOfFiles = os.listdir(dirName)
 	wavs = []
@@ -76,9 +76,43 @@ def getWavs(dirName):
 import random
 import wave
 import rnnoise, process_audio
+import sys
 
-def test_normalize_volume(x):
-	rnnoise_state = rnnoise.RNNoise()
+
+input_sample_rate = 48000#Do not change as rnnoise requires sample rate of 48K
+sample_rate = 16000#Do not change as sphinx requires sample rate of 16K
+input_chunk_size = 480#Do not change as rnnoise requires frame size of 480
+input_sample_width = 2#16 bit, each short is 2 bytes
+audio_sample_density = (input_sample_rate/input_chunk_size) #i.e chunks for a second
+THREE_SECONDS_CHUNKED = int(audio_sample_density*3)
+THREE_SECONDS = int(input_chunk_size*input_sample_width*THREE_SECONDS_CHUNKED)
+
+MAX_NOISE_VOL = 7
+BACKGROUND_SPEECH_VOL = 2
+SPEECH_VOL_MIN = 9
+SPEECH_VOL_MAX = 12
+DENOISED_VOL = 3
+
+noise_path = "test/noise"
+noise_wavs = getWavs(noise_path)
+fp_path = "test/false_samples"
+fp_wavs = getWavs(fp_path)
+tp_path = "test/true_samples/"
+tp_wavs = getWavs(tp_path)
+
+
+
+verbose = False
+save_true_positives = False
+save_false_positives = False
+save_true_negatives = False
+save_false_negatives = False
+rnnoise_state = rnnoise.RNNoise()
+
+def test(x=None):
+	global DENOISED_VOL
+	if (x != None):
+		DENOISED_VOL = x
 	resampler_state = None
 
 	r1 = random.Random()
@@ -86,49 +120,11 @@ def test_normalize_volume(x):
 	r1.seed(83782625373708)#So we get same seq every time
 	r2.seed(52552468426257)#So we get same seq every time
 
+	true_positive_count = 0.0#Sample had key-phrase and was detected
+	false_negative_count = 0.0#Sample had key-phrase but wasn't detected
 
-	input_sample_rate = 48000#Do not change as rnnoise requires sample rate of 48K
-	sample_rate = 16000#Do not change as sphinx requires sample rate of 16K
-	input_chunk_size = 480#Do not change as rnnoise requires frame size of 480
-	input_sample_width = 2#16 bit, each short is 2 bytes
-	audio_sample_density = (input_sample_rate/input_chunk_size) #i.e chunks for a second
-	THREE_SECONDS_CHUNKED = int(audio_sample_density*3)
-	THREE_SECONDS = int(input_chunk_size*input_sample_width*THREE_SECONDS_CHUNKED)
-
-	noise_path = "test/noise"
-	noise_wavs = getWavs(noise_path)
-	MAX_NOISE_VOL = 7
-	BACKGROUND_SPEECH_VOL = 2
-	SPEECH_VOL_MIN = 9
-	SPEECH_VOL_MAX = 12
-	DENOISED_VOL = 3
-	fp_path = "test/false_samples"
-	fp_wavs = getWavs(fp_path)
-
-	tp_path = "test/true_samples/"
-	tp_wavs = getWavs(tp_path)
-
-
-	true_positive_count = 0#Sample had key-phrase and was detected
-	false_negative_count = 0#Sample had key-phrase but wasn't detected
-
-	false_positive_count = 0#Sample had no key-phrase, but was detected
-	true_negative_count = 0#Sample had no key-phrase and wasn't detected
-
-
-	import sys
-
-	if ("-lf" in sys.argv):
-		print(noise_wavs)
-		print(fp_wavs)
-		print(tp_wavs)
-		input("press enter to continue..")
-
-	verbose = ("-v" in sys.argv)
-	save_true_positives = ("-savetp" in sys.argv)
-	save_false_positives = ("-savefp" in sys.argv)
-	save_true_negatives = ("-savetn" in sys.argv)
-	save_false_negatives = ("-savefn" in sys.argv)
+	false_positive_count = 0.0#Sample had no key-phrase, but was detected
+	true_negative_count = 0.0#Sample had no key-phrase and wasn't detected
 
 	process_audio.init_decoder()
 	progress = 0
@@ -175,6 +171,7 @@ def test_normalize_volume(x):
 						if (save_true_positives):
 							encode_speech(data,input_sample_rate,"true positive")
 					else:
+						print(result)
 						false_positive_count+=1#add false_positive
 						if (save_false_positives):
 							encode_speech(data,input_sample_rate,"false positive"+str(result).replace("[","").replace("]"," "))
@@ -217,6 +214,7 @@ def test_normalize_volume(x):
 						encode_speech(data,input_sample_rate,"tp")
 						#encode_speech(denoised_data,sample_rate,"tp_dn")
 				else:
+					print(tp_wav)
 					false_negative_count+=1#add false_negative
 					if (save_false_negatives):
 						encode_speech(data,input_sample_rate,"fn")
@@ -224,8 +222,7 @@ def test_normalize_volume(x):
 				smaller_prog += 1.0/((len(fp_wavs)+len(tp_wavs))*(len(noise_wavs)))
 				if (verbose):
 					print(result)
-					print(smaller_prog*100.0)
-				
+					print(smaller_prog*100.0)			
 	except Exception as e:
 		print(e)
 	except KeyboardInterrupt:
@@ -254,70 +251,21 @@ def test_normalize_volume(x):
 		ppv = (true_positive_count/(true_positive_count+false_positive_count))# positive predictive value
 	except Exception as e:
 		print(e)
-
 	print("false positive rate : - "+str(fpr))
 	print("true positive rate : - "+str(tpr)) 
 	print("positive predictive value : - "+str(ppv))
 	return (fpr,tpr,ppv)
 
+if __name__ == "__main__":
+	if ("-lf" in sys.argv):
+		print(noise_wavs)
+		print(fp_wavs)
+		print(tp_wavs)
+		input("press enter to continue..")
 
-
-test_normalize_volume(0)
-def get_data(x_min,x_max,x_step):
-	tpr_points = []
-	fpr_points = []
-	ppv_points = []
-	for i in range(((x_max-x_min)//x_step)):
-		f,t,p = test_normalize_volume(x_min+(x_step*i))
-		tpr_points.append(t)
-		fpr_points.append(f)
-		ppv_points.append(p)
-		print("Total_Progress ="+str((i/((x_max-x_min)//x_step))))
-	return (tpr_points,fpr_points,ppv_points)
-import matplotlib.pyplot as plt
-import numpy as np
-
-
-#Get values
-#tpr_points, fpr_points,ppv_points = get_data(0,25,1)
-
-# tpr_points.append(1.0)
-# fpr_points.append(1.0)
-# ppv_points.append(0.0)
-
-print(tpr_points)
-print(fpr_points)
-print (ppv_points)
-# This is the AUC
-auc = abs(np.trapz(tpr_points,fpr_points))
-print("Area Under Curve - "+str(auc))
-
-
-title = "test_normalize_volume"
-plt.figure(title)
-# This is the ROC curve
-plt.subplot(211)
-plt.title("ROC curve")
-plt.xlim([0, 1])
-plt.ylim([0, 1])
-#Plot no skill
-plt.plot([0, 1], [0, 1], linestyle='--')
-plt.plot(fpr_points,tpr_points,'r-.')
-plt.ylabel("True positive rate")
-plt.xlabel("False positive rate")
-#plt.gca().invert_xaxis()#inver x axis so it makes sense
-
-plt.subplot(212)
-plt.title("PRC curve")
-plt.xlim([0, 1])
-plt.ylim([0, 1])
-# plot no skill
-plt.plot([0, 1], [0.5, 0.5], linestyle='--')
-plt.plot(tpr_points,ppv_points,'r-.')
-plt.ylabel("Positive predictive value")
-plt.xlabel("True positive rate")
-
-
-plt.show() 
-
-
+	verbose = ("-v" in sys.argv)
+	save_true_positives = ("-savetp" in sys.argv)
+	save_false_positives = ("-savefp" in sys.argv)
+	save_true_negatives = ("-savetn" in sys.argv)
+	save_false_negatives = ("-savefn" in sys.argv)
+	test()
