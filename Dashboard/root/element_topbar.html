@@ -1,0 +1,41 @@
+<!-- Sidebar Toggle (Topbar) only in mobile device -->
+<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+    <i class="fa fa-bars"></i>
+</button>
+
+<h4 class="text-gray-800" id="topBarTitle" style="margin-left: 0.5rem;margin-bottom: 0;">Placeholder Title</h4>
+
+<!-- Topbar Navbar -->
+<ul class="navbar-nav ml-auto">
+
+    <!--<div class="topbar-divider d-none d-sm-block"></div>-->
+
+    <!-- Nav Item - User Information -->
+    <!--<li class="nav-item dropdown no-arrow">
+        <a class="nav-link dropdown-toggle" id="userDropdown" role="button">
+            <span class="mr-2 d-none d-lg-inline text-gray-600">Some random hospital staff</span>
+            &lt;!&ndash;<img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60" alt="avatar">&ndash;&gt;
+        </a>
+    </li>-->
+
+</ul>
+
+<script>
+    switch (window.location.pathname) {
+        case ('/'):
+            document.getElementById('topBarTitle').innerHTML = 'EDVS Dashboard';
+            break;
+        case ('/alerts'):
+            document.getElementById('topBarTitle').innerHTML = 'Alerts';
+            break;
+        case ('/users'):
+            document.getElementById('topBarTitle').innerHTML = 'Users';
+            break;
+        case ('/devices'):
+            document.getElementById('topBarTitle').innerHTML = 'Devices';
+            break;
+        default:
+            break;
+    }
+    if (document.getElementById('404').innerText === '404') document.getElementById('topBarTitle').innerHTML = 'Page Not Found';
+</script>
