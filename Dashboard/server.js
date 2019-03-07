@@ -1,88 +1,82 @@
-//Imports
-const express = require('express');
-var session = require('express-session');
+/**
+ * Import necessary modules
+ */
 const bodyParser = require('body-parser');
-require('dotenv').config()//load .env files
-var https = require('https');
-var http = require('http');
-var fs = require('fs');
-//Imports*
+const dotenv = require('dotenv');
+const express = require('express');
+const fs = require('fs');
+const helmet = require('helmet');
+const http = require('http');
+const https = require('https');
+const mongoose = require('mongoose');
+const session = require('express-session');
 
-
-//HTTPS
-const ports = [80,443];
-var sslkey = fs.readFileSync('./config/ssl/ssl-key.pem');
-var sslcert = fs.readFileSync('./config/ssl/ssl-cert.pem')
-var credentials = {
-    key: sslkey,
-    cert: sslcert
-};
-
-
-// create express app
-const app = express();
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true ,limit:'15mb' }));
-
-// parse requests of content-type - application/json
-app.use(bodyParser.json({limit:'15mb'}));
-
-
-//use sessions for tracking logins
-app.use(session({
-  secret: (process.env.SESSION_SECRET || '075nV3JbOlgSV7rPGzajyAXQIw4NeXA12bfSzKj'),
-  resave: true,
-  saveUninitialized: false,
-  cookie: { maxAge: 3600000,secure: true }
-}));
-
+// Load .env file. Throws error if it is not present
+const dotenvResult = dotenv.config();
+if (dotenvResult.error) throw dotenvResult.error; else console.log('.env loaded.');
 
 // Configuring the database
-const dbConfig = require('./config/database.config.js');
-const mongoose = require('mongoose');
-
 mongoose.Promise = global.Promise;
-
-// Connecting to the database
 mongoose.set('useCreateIndex', true);
-mongoose.connect(dbConfig.url, {
-	useNewUrlParser: true
+mongoose.connect(process.env.DASHBOARD_DATABASE_URL, {
+    useNewUrlParser: true
 }).then(() => {
-	console.log("Successfully connected to the database");  
-}).catch(err => {
-	console.log('Could not connect to the database.', err);
-	process.exit();
+    console.log('Connected to MongoDB database.');
+}).catch((err) => {
+    console.log('Could not connect to MongoDB database.', err);
+    process.exit();
 });
 
+// Create an Express app
+const app = express();
 
-//Force HTTPS
-const forceSecure = function(req, res, next) {
-	if (req.secure) {
-		// Already https; don't do anything special.
-		next();
-	}
-	else {
-		// Redirect to https.
-		res.redirect('https://' + req.headers.host + req.url);
-	}
-};
-app.use(forceSecure);
+// Redirect HTTP request to HTTPS
+app.use((req, res, next) => {
+    if (req.secure) next();
+    else res.redirect(301, `https://${req.headers.host}${req.url}`);
+});
 
-// // Require Alert routes
-require('./app/routes/alert.routes.js')(app);
+// Use Helmet to secure response headers
+app.use(helmet());
+app.use(helmet.noCache());
 
-// // Require User routes
-require('./app/routes/user.routes.js')(app);
+// Parse requests for application/x-www-form-urlencoded and application/json
+app.use(bodyParser.urlencoded({extended: true, limit: '15mb'}));
+app.use(bodyParser.json({limit: '15mb'}));
 
-//For the startic files
+// Serve static files in /root
 app.use(express.static('root'));
 
+// Mount express-session middleware to track login sessions
+app.use(session({
+    secret: process.env.DASHBOARD_SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: parseInt(process.env.DASHBOARD_SESSION_COOKIE_MAXAGE),
+        secure: true
+    }
+}));
 
-var httpServer = http.createServer(app);
-httpServer.listen(ports[0]);
+// Load routes
+require('./app/routes/alert.routes')(app);
+require('./app/routes/user.routes')(app);
+require('./app/routes/dictionary.routes')(app);
+require('./app/routes/static.routes')(app);
 
-var httpsServer = https.createServer(credentials,app);
-httpsServer.listen(ports[1], () => {
-	console.log("Server is listening");
+
+// Define a local variable within Express app instance for dictionary
+app.locals.dictionary = process.env.DASHBOARD_DICTIONARY;
+
+
+// Creates HTTP and HTTPS server
+http.createServer(app).listen(process.env.DASHBOARD_HTTP_PORT, () => {
+    console.log(`HTTP server is listening on port ${process.env.DASHBOARD_HTTP_PORT || 80}.`);
+});
+const https_options = {
+    key: fs.readFileSync(process.env.DASHBOARD_TLS_PRIVATE_KEY),
+    cert: fs.readFileSync(process.env.DASHBOARD_TLS_CERTIFICATE)
+};
+https.createServer(https_options, app).listen(process.env.DASHBOARD_HTTPS_PORT, () => {
+    console.log(`HTTPS server is listening on port ${process.env.DASHBOARD_HTTPS_PORT || 443}.`);
 });

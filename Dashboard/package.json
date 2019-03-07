@@ -1,10 +1,14 @@
 {
   "name": "edvs-dashboard",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "UCL COMP0016 ARM/GOSH Project Dashboard",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=8.0.0"
   },
   "repository": {
     "type": "git",
@@ -30,12 +34,13 @@
   },
   "homepage": "https://github.com/Shb742/SysEng_ARM_Audio_Rec#readme",
   "dependencies": {
-    "bcrypt": "^3.0.2",
+    "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
+    "helmet": "^3.15.1",
     "mongo-sanitize": "^1.0.1",
-    "mongoose": "^5.4.0"
+    "mongoose": "^5.4.13"
   }
 }
