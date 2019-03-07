@@ -1,31 +1,35 @@
 module.exports = (app) => {
-	const users = require('../controllers/user.controller.js');
-	const auth = require('../controllers/auth.controller.js');
 
-	// Create a new user
-	app.post('/singup', [auth.checkAuth,users.singup]);
+    const users = require('../controllers/user.controller.js');
+    const auth = require('../controllers/auth.controller.js');
 
-	// Update user details
-	// app.post('/update', [auth.checkAuth,users.update]);
+    // Create a new user
+    app.post('/signup', [auth.checkAuth, users.signup]);
 
-	// Get Number Of Alerts
-	app.get('/countusers', [auth.checkAuth, users.count]);
+    // Update user details
+    // app.post('/update', [auth.checkAuth,users.update]);
 
-	// List All Users
-	app.get('/listusers', [auth.checkAuth,users.find]); 
+    // Get Number Of Alerts
+    app.get('/countusers', [auth.checkAuth, users.count]);
 
-	// List Devices
-	app.get('/listdevices', [auth.checkAuth,users.findDevices]); 
+    // Get number of devices
+    app.get('/countdevices', [auth.checkAuth, users.countdevices]);
 
-	// Ping
-	app.get('/ping', [auth.checkAuth,users.ping]);
+    // List All Users
+    app.get('/listusers', [auth.checkAuth, users.find]);
 
-	// Delete an user
-	app.delete('/delete/:userId', [auth.checkAuth,users.delete]);
+    // List Devices
+    app.get('/listdevices', [auth.checkAuth, users.findDevices]);
 
-	// Login
-	app.post('/login', users.login);
+    // Ping
+    app.get('/ping', [auth.checkAuth, users.ping]);
 
-	// Logout
-	app.get('/logout', users.logout);	
-}
+    // Delete an user
+    app.delete('/delete/:userId', [auth.checkAuth, users.delete]);
+
+    // Log in
+    app.post('/login', users.login);
+
+    // Log out
+    app.get('/logout', users.logout);
+};

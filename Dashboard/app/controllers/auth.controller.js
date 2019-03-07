@@ -7,7 +7,7 @@ exports.checkAuth = (req, res, next) => {
 	sanitize(req);//make safe for mongodb
 	if (escape(req.query.token) ==  admintoken){
 		res.locals.authlevel = 0;//admin
-		next()
+		next();
 	}else if (req.session) {
 		User.findById(sanitize(req.session.userId))
 		.exec(function (error, user) {
@@ -18,11 +18,11 @@ exports.checkAuth = (req, res, next) => {
 					res.status(400).send({ERROR: 'Not authorized!'});
 				} else {
 					res.locals.authlevel = user.authlevel;
-					next()
+					next();
 				}
 			}
 		});
 	}else{
-		res.redirect('/pages/login.html');
+		res.redirect('/login');
 	}
 }
