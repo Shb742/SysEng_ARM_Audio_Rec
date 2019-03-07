@@ -1,31 +1,56 @@
+#!/usr/bin/env python3
+import errno
 import os
+import subprocess
+import sys
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-os.chdir(dir_path)
+print("")
+print("##############################")
+print("#                            #")
+print("#    EDVS Dashboard Setup    #")
+print("#                            #")
+print("##############################")
+print("")
 
-env: str = """SERVER_URL=<server>
-MONGODB_URI=<mongo>
-ADMIN_TOKEN=DEFAULT@Admin123ToKen0qekksd2
-SESSION_SECRET=ExampleSecretOOOO.O-.-_-:):(:
-"""
-env = env.replace("<server>", (input("server address (default: https://localhost) :")
-                               or "https://localhost"))
-env = env.replace("<mongo>", (input("mongodb address (default: mongodb://localhost:27017/dashboard) :")
-                              or "mongodb://localhost:27017/dashboard"))
-try:
-    envFile = open(".env", "w")
-    envFile.write(env)
-    envFile.close()
-except IOError as e:
-    print(str(e))
-    if (e[0] == errno.EPERM):
-        print("Error run as root")
-        sys.exit(1)
+# Check if current system is linux-based
+if sys.platform != "linux":
+    print("EDVS Dashboard is developed for Linux distributions only.")
+    print("The setup will now exit.")
+    exit(1)
 
-os.system("sudo chmod +x " + dir_path + "/setup/setup.sh")
-os.system("sudo " + dir_path + "/setup/./setup.sh")  # install mongodb and npm dependancies
-input("press enter to conitnue")
+# Install required software
+print("Installing Node.js and NPM...")
+subprocess.run(["sudo", "apt", "update"])
+subprocess.run(["sudo", "apt", "install", "-y", "nodejs", "npm"])
 
+# Setup MongoDB
+is_db_local = input("\nWould you like to install MongoDB on this computer too? (y/n)")
+mongodb_url = ""
+if is_db_local != "y" and is_db_local != "n":
+    while is_db_local != "y" and is_db_local != "n":
+        is_db_local = input("Please enter 'y' for yes or 'n' for no: ")
+if is_db_local == "y":
+    print("Installing MongoDB...")
+    subprocess.run(["sudo", "apt", "install", "-y", "mongodb"])
+    mongodb_url = "mongodb://localhost:27017/dashboard"
+elif is_db_local == "n":
+    mongodb_url = input("In that case, please enter the URL for the MongoDB server:")
+
+# Setup .env (environment variable) for Node.js server
+dotenv_example = open("env.example", "r")
+dotenv = ""
+for line in dotenv_example:
+    if "DASHBOARD_DATABASE_URL" in line:
+        line = "DASHBOARD_DATABASE_URL=" + mongodb_url + "\n"
+    elif "DASHBOARD_SESSION_SECRET" in line:
+        line = "DASHBOARD_SESSION_SECRET=" \
+               + (input("Please set a password for signing session cookies"
+                        " (if left blank, a random secure one will be generated):") or bytes.hex(os.urandom(12))) \
+               + "\n"
+    dotenv = dotenv + line
+open(".env", "w").write(dotenv)
+
+# init scripts
 initdScript = """#!/bin/sh
 
 APP_NAME="EdvsDashboard"
