@@ -13,7 +13,11 @@ const session = require('express-session');
 
 // Load .env file. Throws error if it is not present
 const dotenvResult = dotenv.config();
-if (dotenvResult.error) throw dotenvResult.error; else console.log('.env loaded.');
+if (dotenvResult.error) {
+    console.log('Failed to load .env (environment variables).');
+    console.log('Re-running setup script will most likely fix this issue.');
+    process.exit(1);
+} else console.log('.env loaded.');
 
 // Configuring the database
 mongoose.Promise = global.Promise;
