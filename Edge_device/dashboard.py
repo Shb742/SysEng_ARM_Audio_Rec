@@ -83,11 +83,12 @@ def load_kws(kws_file="keyphrase_list"):
 			print("pulling kws.....")
 			login()
 			r = session.get(url = url+"/api/dictionary", verify=False, timeout=10)
+			new_kws = r.json()[0]["content"].strip()
 			print("here")
 			if (r.status_code == 200):
-				if (r.json()[0].strip() != keyphrase_list):
+				if (new_kws != keyphrase_list):
 					kps_file = open(kws_file,"w")
-					kps_file.write(r.json()[0].strip())
+					kps_file.write(new_kws)
 					kps_file.close()
 					print("Updated keyphrase_list")
 		except:
