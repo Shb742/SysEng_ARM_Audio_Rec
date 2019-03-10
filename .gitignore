@@ -8,6 +8,10 @@
 ################
 Dashboard/node_modules/
 
+# meh #
+################
+Edge_device/test/
+Experimental_Features/ 
 
 # IntelliJ IDEA Files #
 #######################

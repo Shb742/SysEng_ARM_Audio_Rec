@@ -104,29 +104,6 @@ function updateAlerts(first_update) {
                 }
             }
             table.draw();
-
-           /* //find index of newest current one
-            var latest = "";
-            var start = true;
-            if (document.getElementById('alertTable')) {
-                if (!first_update && (tableRef.rows.length != 0)) {
-                    latest = table.rows({order: "index"}).data().reverse()[0][0];
-                    start = false;
-                }
-            }
-            while (json.length > 0) {
-                var item = json.pop();
-                if (start) {
-                    table.row.add([item["_id"],
-                        "<pre>" + escapeHtml(item["content"]) + "</pre>",
-                        "<p first='" + first_update + "'>" + escapeHtml(item["location"]) + "</p>",
-                        new Date(item["createdAt"]).toLocaleString('en-GB'),
-                        "<a style='font-size: 100%;cursor: pointer;' idd='" + item["_id"] + "' class='fa fa-play' onclick='playAudio(this)'></a>"]);
-                } else if (item["_id"] == latest) {
-                    start = true;
-                }
-            }
-            table.draw();*/
         })
         .fail(function (err) {
             alert(err.responseText);
@@ -155,12 +132,12 @@ function checkForAlerts(first_update) {
         }
         updateAlerts(first_update);
     } else {
-        console.log("1");
+        //console.log("1");
         var newXhr = $.getJSON("/api/alerts/?file=none&limit=1")
             .done(function (json) {
-                console.log("2");
+                //console.log("2");
                 if (json[0]["_id"] != alertList[0]["_id"]) {
-                    console.log("3");
+                    //console.log("3");
                     hasNewAlerts = true;
                     updateAlerts(first_update);
                 }
@@ -176,7 +153,6 @@ function checkForAlerts(first_update) {
 function documentReady() {
 
     checkForAlerts(true);
-    // updateUserStatus();
     setInterval(() => {
         checkForAlerts(false);
     }, 5000); //check for new alerts every 5 seconds

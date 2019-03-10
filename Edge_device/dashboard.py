@@ -1,4 +1,4 @@
-import requests,json,base64,time
+import requests,base64,time
 import wave,io
 import threading
 
@@ -70,6 +70,29 @@ def login(force=False):
 		except:
 			pass#Fail silently
 
+def load_kws(kws_file="keyphrase_list"):
+	#globals
+	global session
+	global url
+	#globals*
+	kps_file = open(kws_file,"r")
+	keyphrase_list = kps_file.read().strip()
+	kps_file.close()
+	with lock:
+		try:
+			print("pulling kws.....")
+			login()
+			r = session.get(url = url+"/api/dictionary", verify=False, timeout=10)
+			print("here")
+			if (r.status_code == 200):
+				if (r.json()[0].strip() != keyphrase_list):
+					kps_file = open(kws_file,"w")
+					kps_file.write(r.json()[0].strip())
+					kps_file.close()
+					print("Updated keyphrase_list")
+		except:
+			pass#Fail silently
+
 def ping():
 	#globals
 	global session
@@ -85,7 +108,7 @@ def ping():
 				resp = r.content.decode("utf-8") 
 				print("here")
 				print(resp)
-				if (not('Success' in json.loads(resp))):
+				if (not('Success' in resp.json())):
 					print("ping-retrying...")
 					login(True)
 					r = session.get(url = url+"/ping", verify=False, timeout=10)
@@ -107,7 +130,7 @@ def send(data,text):
 		try:
 			r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False, timeout=100) 
 			#Retry one time if post failed (i.e session destroyed)
-			if (not('Success' in json.loads(r.content.decode("utf-8")))):
+			if (not('Success' in r.json())):
 				print("retrying.....")
 				login(True)
 				r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False, timeout=100) 

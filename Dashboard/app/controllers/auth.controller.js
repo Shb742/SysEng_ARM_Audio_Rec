@@ -1,6 +1,6 @@
 // AUTH
 const User = require('../models/user.model.js');
-const admintoken = process.env.ADMIN_TOKEN || "DEFAULT@Admin123ToKen0qekksd";
+const admintoken = process.env.DASHBOARD_ADMIN_TOKEN || "DEFAULT@Admin123ToKen0qekksd";
 const sanitize = require('mongo-sanitize');
 
 exports.checkAuth = (req, res, next) => {

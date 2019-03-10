@@ -36,8 +36,11 @@ def init_decoder():
 	config.set_string('-hmm', os.path.join(model_directory, 'en-us/en-us'))
 	#If processing free form language #config.set_string('-lm', os.path.join(model_directory, 'en-us/en-us.lm.bin'))
 	#Original dictionary #config.set_string('-dict', os.path.join(model_directory, 'en-us/cmudict-en-us.dict'))
-	config.set_string('-dict', 'customDict_test')
-	
+	config.set_string('-dict', 'customDict')
+
+	#Load keyphrase_list
+	dashboard.load_kws()
+
 	# Creaders decoder object for streaming data.
 	decoder = Decoder(config)
 	decoder.set_kws('keyphrase', 'keyphrase_list')
@@ -63,6 +66,7 @@ def main(jobs):
 
 	init_decoder()
 	init_dashboard()
+
 	while 1:
 		audio = jobs.get()#blocking call, waiting for jobs
 		decoded_text = decode_audio(audio)

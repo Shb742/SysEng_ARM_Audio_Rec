@@ -22,6 +22,7 @@ if sys.platform != "linux":
 print("Installing Node.js and NPM...")
 subprocess.run(["sudo", "apt", "update"])
 subprocess.run(["sudo", "apt", "install", "-y", "nodejs", "npm"])
+subprocess.run(["sudo", "npm", "install"])
 
 # Setup MongoDB
 is_db_local = input("\nWould you like to install MongoDB on this computer too? (y/n)")

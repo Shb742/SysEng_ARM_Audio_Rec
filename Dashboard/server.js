@@ -42,7 +42,6 @@ app.use((req, res, next) => {
 
 // Use Helmet to secure response headers
 app.use(helmet());
-app.use(helmet.noCache());
 
 // Parse requests for application/x-www-form-urlencoded and application/json
 app.use(bodyParser.urlencoded({extended: true, limit: '15mb'}));
