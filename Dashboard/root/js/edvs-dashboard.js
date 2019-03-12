@@ -23,6 +23,7 @@ try {
 var table;
 var alertList = [""];
 const maxAlerts = 100;
+var alertPage = (document.getElementById('alertTable') != null);
 
 // Setting page appearances
 $('#accordionSidebar').load('element_sidebar.html');
@@ -91,17 +92,26 @@ function updateAlerts(first_update) {
             alertList = [...json];
             while (json.length > 0) {
                 var item = json.pop();
-                if (start) {
-                    table.row.add([item["_id"],
-                        "<pre>" + escapeHtml(item["content"]) + "</pre>",
-                        "<p viewed='" + escapeHtml(item["viewed"]) + "'>" + escapeHtml(item["location"]) + "</p>",
-                        new Date(item["createdAt"]),
-                        "<a style='font-size: 100%;cursor: pointer;' idd='" + item["_id"] + "' class='fa fa-play' onclick='playAudio(this)'></a>"]);
-                }else if(item["_id"] == latest){
-                    start = true;
+                if (alertPage){
+                    if (start) {
+                        table.row.add([item["_id"],
+                            "<pre>" + escapeHtml(item["content"]) + "</pre>",
+                            "<p viewed='" + escapeHtml(item["viewed"]) + "'>" + escapeHtml(item["location"]) + "</p>",
+                            new Date(item["createdAt"]),
+                            "<a style='font-size: 100%;cursor: pointer;' idd='" + item["_id"] + "' class='fa fa-play' onclick='playAudio(this)'></a>"]);
+                    }else if(item["_id"] == latest){
+                        start = true;
+                    }
+                }else{
+                    if (!item["viewed"]){
+                        document.getElementById('alertsSidebarButton').style.color = 'tomato';
+                        document.getElementById('alertsSidebarButton').classList.add('blink');
+                    }  
                 }
             }
-            table.draw();
+            if (alertPage){
+                table.draw();
+            }
         })
         .fail(function (err) {
             alert(err.responseText);
@@ -113,7 +123,7 @@ function updateAlerts(first_update) {
 //change this will not work when operating at alert limit (change to get newest alert and compare ids)
 function checkForAlerts(first_update) {
     if (first_update) {
-        if (document.getElementById('alertTable')) {
+        if (alertPage) {
             table = $('#alertTable').DataTable({
                 "createdRow": function (row, data, dataIndex) {
                     if ($(row.cells[1].children[0]).attr("viewed") == "false") {
@@ -130,16 +140,14 @@ function checkForAlerts(first_update) {
         }
         updateAlerts(first_update);
     } else {
-        //console.log("1");
         var newXhr = $.getJSON("/api/alerts/?file=none&limit=1")
             .done(function (json) {
-                //console.log("2");
-                if (json[0]["_id"] != alertList[0]["_id"]) {
-                    //console.log("3");
-                    if(window.location.href.indexOf("alert") == -1) {
-                        document.getElementById('alertsSidebarButton').style.color = 'tomato';
-                        document.getElementById('alertsSidebarButton').classList.add('blink');
-                    }
+
+                if ((alertList != [""]) && (json[0]["_id"] != alertList[0]["_id"])) {
+                    // if(!alertPage) {
+                    //     document.getElementById('alertsSidebarButton').style.color = 'tomato';
+                    //     document.getElementById('alertsSidebarButton').classList.add('blink');
+                    // }
                     updateAlerts(first_update);
                 }
 
