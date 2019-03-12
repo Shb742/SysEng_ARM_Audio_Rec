@@ -3,7 +3,8 @@ import errno
 import os
 import subprocess
 import sys
-
+dir_path = os.path.dirname(os.path.realpath(__file__))
+os.chdir(dir_path)
 print("")
 print("##############################")
 print("#                            #")
