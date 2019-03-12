@@ -208,7 +208,7 @@ function updateUserTable() {
 
     // Initialise a DataTable object
     let userTable = $('#userTable').DataTable({
-        order: [[3, "desc"]]
+        order: [[2, "desc"]]
     });
     userTable.column(0).visible(false);
 
@@ -221,7 +221,6 @@ function updateUserTable() {
                     userTable.row.add([
                         item['_id'],
                         item["username"],
-                        'alias',
                         new Date(item["lastSeen"])
                     ]);
                 }
