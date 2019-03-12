@@ -104,7 +104,7 @@ exports.findDevices = (req, res) => {
             return res.send(users);
         }).catch(err => {
         return res.status(500).send({
-            message: err.message || "Some error occurred while retrieving alerts."
+            message: err.message || "Some error occurred while retrieving users."
         });
     });
 };
@@ -112,11 +112,6 @@ exports.findDevices = (req, res) => {
 // Retrieve and return users from the database.
 exports.find = (req, res) => {
     // Validate request
-    if (res.locals.authlevel != 0) {
-        return res.status(400).send({
-            ERROR: 'Not authorized!'
-        });
-    }
     var Qlimit = parseInt(req.query.limit);
     if (isNaN(Qlimit)) {
         Qlimit = 10;
@@ -131,7 +126,7 @@ exports.find = (req, res) => {
             return res.send(users);
         }).catch(err => {
         return res.status(500).send({
-            message: err.message || "Some error occurred while retrieving alerts."
+            message: err.message || "Some error occurred while retrieving users."
         });
     });
 };
