@@ -6,6 +6,10 @@ const AlertSchema = new Schema({
     content: String,
     type: String,
     location: String,
+    viewed:{
+        type: Boolean,
+        default: 0
+    },
     file: {
         type: String,
         select: false

@@ -96,6 +96,8 @@ exports.findOne = (req, res) => {
                     message: "Note not found with id " + req.params.alertId
                 });
             }
+            alert.viewed = true;
+            alert.save();
             return res.send(alert);
         }).catch(err => {
         if (err.kind === 'ObjectId') {

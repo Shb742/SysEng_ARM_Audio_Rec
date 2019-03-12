@@ -24,8 +24,6 @@ var table;
 var alertList = [""];
 const maxAlerts = 100;
 
-let hasNewAlerts = false;
-
 // Setting page appearances
 $('#accordionSidebar').load('element_sidebar.html');
 $('#topBar').load('element_topbar.html');
@@ -96,7 +94,7 @@ function updateAlerts(first_update) {
                 if (start) {
                     table.row.add([item["_id"],
                         "<pre>" + escapeHtml(item["content"]) + "</pre>",
-                        "<p first='" + first_update + "'>" + escapeHtml(item["location"]) + "</p>",
+                        "<p viewed='" + escapeHtml(item["viewed"]) + "'>" + escapeHtml(item["location"]) + "</p>",
                         new Date(item["createdAt"]),
                         "<a style='font-size: 100%;cursor: pointer;' idd='" + item["_id"] + "' class='fa fa-play' onclick='playAudio(this)'></a>"]);
                 }else if(item["_id"] == latest){
@@ -118,7 +116,7 @@ function checkForAlerts(first_update) {
         if (document.getElementById('alertTable')) {
             table = $('#alertTable').DataTable({
                 "createdRow": function (row, data, dataIndex) {
-                    if ($(row.cells[1].children[0]).attr("first") == "false") {
+                    if ($(row.cells[1].children[0]).attr("viewed") == "false") {
                         $(row).attr('class', "highlight");
                     }
                     $(row).attr('onclick', '(function(elem){ elem.classList.remove("highlight"); })(this);');
@@ -138,7 +136,10 @@ function checkForAlerts(first_update) {
                 //console.log("2");
                 if (json[0]["_id"] != alertList[0]["_id"]) {
                     //console.log("3");
-                    hasNewAlerts = true;
+                    if(window.location.href.indexOf("alert") == -1) {
+                        document.getElementById('alertsSidebarButton').style.color = 'tomato';
+                        document.getElementById('alertsSidebarButton').classList.add('blink');
+                    }
                     updateAlerts(first_update);
                 }
 
@@ -191,14 +192,6 @@ function updateDeviceTable() {
             alert(err.responseText);
             window.location.replace("/login");
         });
-
-    // Check if there are new alerts
-    setInterval(() => {
-        if (hasNewAlerts) {
-            document.getElementById('alertsSidebarButton').style.color = 'tomato';
-            document.getElementById('alertsSidebarButton').classList.add('blink');
-        }
-    }, 5000);
 }
 
 function updateUserTable() {
@@ -233,12 +226,5 @@ function updateUserTable() {
             window.location.replace("/login");
         });
 
-    // Check if there are new alerts
-    setInterval(() => {
-        if (hasNewAlerts) {
-            document.getElementById('alertsSidebarButton').style.color = 'tomato';
-            document.getElementById('alertsSidebarButton').classList.add('blink');
-        }
-    }, 2000);
 }
 
