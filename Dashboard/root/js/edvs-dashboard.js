@@ -97,7 +97,7 @@ function updateAlerts(first_update) {
                     table.row.add([item["_id"],
                         "<pre>" + escapeHtml(item["content"]) + "</pre>",
                         "<p first='" + first_update + "'>" + escapeHtml(item["location"]) + "</p>",
-                        new Date(item["createdAt"]).toLocaleString('en-GB'),
+                        new Date(item["createdAt"]),
                         "<a style='font-size: 100%;cursor: pointer;' idd='" + item["_id"] + "' class='fa fa-play' onclick='playAudio(this)'></a>"]);
                 }else if(item["_id"] == latest){
                     start = true;
@@ -181,7 +181,7 @@ function updateDeviceTable() {
                     item['_id'],
                     item["username"],
                     isOnline ? "online" : "offline",
-                    new Date(item["lastSeen"]).toLocaleString('en-GB')
+                    new Date(item["lastSeen"])
                 ]);
             }
             deviceTable.draw(false);
@@ -216,12 +216,14 @@ function updateUserTable() {
         .done((list) => {
             while (list.length > 0) {
                 let item = list.pop();
-                userTable.row.add([
-                    item['_id'],
-                    item["username"],
-                    'alias',
-                    new Date(item["lastSeen"]).toLocaleString('en-GB')
-                ]);
+                if (item["authlevel"] != 1){
+                    userTable.row.add([
+                        item['_id'],
+                        item["username"],
+                        'alias',
+                        new Date(item["lastSeen"])
+                    ]);
+                }
             }
             userTable.draw(false);
         })

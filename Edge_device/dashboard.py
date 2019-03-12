@@ -65,7 +65,7 @@ def login(force=False):
 		post_fields = {'username': userName,'password':password}   
 		try:
 			r = session.post(url = url+"/login", data = post_fields, verify=False, timeout=10)
-			print("logged in")
+			#print("logged in")
 			last_login = time.time()
 		except:
 			pass#Fail silently
@@ -80,17 +80,17 @@ def load_kws(kws_file="keyphrase_list"):
 	kps_file.close()
 	with lock:
 		try:
-			print("pulling kws.....")
+			#print("pulling kws.....")
 			login()
 			r = session.get(url = url+"/api/dictionary", verify=False, timeout=10)
 			new_kws = r.json()[0]["content"].strip()
-			print("here")
+			#print("here")
 			if (r.status_code == 200):
 				if (new_kws != keyphrase_list):
 					kps_file = open(kws_file,"w")
 					kps_file.write(new_kws)
 					kps_file.close()
-					print("Updated keyphrase_list")
+					#print("Updated keyphrase_list")
 		except:
 			pass#Fail silently
 
@@ -104,13 +104,13 @@ def ping():
 		with lock:
 			login()
 			try:
-				print("pinging.....")
+				#print("pinging.....")
 				r = session.get(url = url+"/ping", verify=False, timeout=10)
 				resp = r.content.decode("utf-8") 
-				print("here")
-				print(resp)
+				#print("here")
+				#print(resp)
 				if (not('Success' in resp.json())):
-					print("ping-retrying...")
+					#print("ping-retrying...")
 					login(True)
 					r = session.get(url = url+"/ping", verify=False, timeout=10)
 			except:
@@ -132,11 +132,11 @@ def send(data,text):
 			r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False, timeout=100) 
 			#Retry one time if post failed (i.e session destroyed)
 			if (not('Success' in r.json())):
-				print("retrying.....")
+				#print("retrying.....")
 				login(True)
 				r = session.post(url = url+"/api/alerts/?file=remove", data = post_fields, verify=False, timeout=100) 
 			#Retry one time if post failed (i.e session destroyed)*
-			print(r.content)
+			#print(r.content)
 		except:
 			pass#Fail silently
 	
