@@ -10,9 +10,12 @@ with open(".env") as f:
 		# Remove leading `export `, if you have those
 		# then, split name / value pair
 		# key, value = line.replace('export ', '', 1).strip().split('=', 1)
-		key, value = line.strip().split('=', 1)
-		# os.environ[key] = value  # Load to local environ
-		env_vars[key] = value # Save to a list
+		try:
+			key, value = line.strip().split('=', 1)
+			# os.environ[key] = value  # Load to local environ
+			env_vars[key] = value # Save to a list
+		except:
+			pass
 
 adminToken = env_vars["DASHBOARD_ADMIN_TOKEN"]
 url = (env_vars["DASHBOARD_URL"] if ("DASHBOARD_URL" in env_vars) else "http://localhost:3000")
