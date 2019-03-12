@@ -11,7 +11,7 @@ exports.create = (req, res) => {
     }
     if (!req.body.file) {
         return res.status(400).send({
-            ERROR: "Content can not be empty"
+            ERROR: "File can not be empty"
         });
     }
 
