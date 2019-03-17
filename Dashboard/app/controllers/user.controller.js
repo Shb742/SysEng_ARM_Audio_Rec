@@ -238,7 +238,9 @@ exports.logout = (req, res) => {
         // Destroy current session
         req.session.destroy((err) => {
             if (err) res.status(500).send("<h1>500 Internal Server Error</h1>");
-            else res.redirect(301, '/');
+            else return res.status(200).send({
+                        Success: "logged out"
+                    });
         });
     }
 };
