@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "mocha tests/server_tests.js",
-    "test": "mocha tests/dashboard_test.js"
+    "test": "mocha tests/dashboard_tests.js"
 
   },
   "repository": {
