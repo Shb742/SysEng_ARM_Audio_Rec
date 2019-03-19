@@ -22,7 +22,6 @@ const AlertSchema = new Schema({
 }, {
     capped: true,
     size: 1677721600,
-    max: 100,
     timestamps: true
 });
 
