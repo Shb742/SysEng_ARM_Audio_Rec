@@ -4,7 +4,9 @@
   "description": "UCL COMP0016 ARM/GOSH Project Dashboard",
   "main": "server.js",
   "scripts": {
+    "test": "mocha tests/server_tests.js",
     "test": "mocha tests/dashboard_test.js"
+
   },
   "repository": {
     "type": "git",
@@ -30,7 +32,7 @@
   },
   "homepage": "https://github.com/Shb742/SysEng_ARM_Audio_Rec#readme",
   "dependencies": {
-    "bcrypt": "^3.0.2",
+    "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
     "check-chai": "0.0.1",
     "dotenv": "^6.2.0",

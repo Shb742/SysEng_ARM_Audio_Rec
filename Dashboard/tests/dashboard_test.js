@@ -51,15 +51,7 @@ describe('Replace characters', function(){
   });
 });
 
-//CANNOT UNIT TEST AUDIO FILES.
-// describe('undefined elements', function(){
-//   it('JSON Responce', function(){
-//
-//     var isItAmpt = dashboard.playAudio(undefined);
-//     alert("Hello, World!");
-//     // assert.equal(isItAmpt, '&quot;');
-//   });
-// });
+
 
 //AFTER PYTHON SERVER MOCK
 // describe('check to see if the new alert gets added to the table', function(){
