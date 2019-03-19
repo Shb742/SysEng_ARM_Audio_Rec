@@ -51,18 +51,18 @@ describe('Replace characters', function(){
   });
 });
 
-
-describe('check to see if the new alert gets added to the table', function(){
-  it('Done', function(){
-    var first_update = 0;
-    var rows_length_before = dashboard.updateAlerts(first_update);
-    //fake alert
-    var rows_length_after = dashboard.updateAlerts(first_update);
-    var difference = rows_length_after - rows_length_before;
-    assert.equal(difference, 1);
-
-  });
-});
+// 
+// describe('check to see if the new alert gets added to the table', function(){
+//   it('Done', function(){
+//     var first_update = 0;
+//     var rows_length_before = dashboard.updateAlerts(first_update);
+//     //fake alert
+//     var rows_length_after = dashboard.updateAlerts(first_update);
+//     var difference = rows_length_after - rows_length_before;
+//     assert.equal(difference, 1);
+//
+//   });
+// });
 
 // describe('check to see if the new alert gets added to the table and old one is now the second alert', function(){
 //   it('Done', function(){

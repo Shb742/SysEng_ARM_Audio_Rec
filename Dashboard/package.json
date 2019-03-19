@@ -4,9 +4,7 @@
   "description": "UCL COMP0016 ARM/GOSH Project Dashboard",
   "main": "server.js",
   "scripts": {
-    "test": "mocha tests/server_tests.js",
     "test": "mocha tests/dashboard_tests.js"
-
   },
   "repository": {
     "type": "git",
@@ -46,6 +44,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "istanbul": "^0.4.5",
     "mocha": "^6.0.0",
     "mocha-sinon": "^2.1.0"
   }
