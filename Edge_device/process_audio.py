@@ -13,8 +13,11 @@ import os
 import threading
 import dashboard
 
+import knock_classifier.audioTrainTest as aT
+import numpy as np
 
-#keywords = ["help"]#maybe load keyphrase_list
+classifier_info  = ("knock_classifier/gradientboosting_classifier","gradientboosting")#("knock_classifier/svm_classifier","svm")
+classifier, MEAN, STD, classNames, mt_win, mt_step, st_win, st_step, compute_beat = [None]*9
 model_directory = "pocketsphinx-5prealpha/model"
 decoder = None #Placeholder
 pinger = None #Placeholder
@@ -46,6 +49,11 @@ def init_decoder():
 	decoder.set_kws('keyphrase', 'keyphrase_list')
 	decoder.set_search('keyphrase')
 
+def init_classifier():
+	global classifier, MEAN, STD, classNames, mt_win, mt_step, st_win, st_step, compute_beat
+	[classifier, MEAN, STD, classNames, mt_win, mt_step, st_win, st_step, compute_beat] = aT.load_model(classifier_info[0])
+
+
 def decode_audio(data):
 	global decoder
 	#data = b''.join(data)
@@ -62,14 +70,24 @@ def decode_audio(data):
 	return words
 
 def main(jobs):
-	global keywords
+	global classifier, MEAN, STD, classNames, mt_win, mt_step, st_win, st_step, compute_beat
+	global classifier_info
 
 	init_decoder()
 	init_dashboard()
+	init_classifier()
 
 	while 1:
 		audio = jobs.get()#blocking call, waiting for jobs
-		decoded_text = decode_audio(audio)
-		print("DETECTED: ", decoded_text)
-		if (len(decoded_text) > 0):
-			dashboard.send(audio,decoded_text)
+		if (audio[0]):
+			decoded_text = decode_audio(audio[1])
+			if (decoded_text != []):
+				print("DETECTED: ", decoded_text)
+			if (len(decoded_text) > 0):
+				dashboard.send(audio[1],decoded_text)
+		else:
+			res = aT.loaded_soundClassification(audio[1], 16000, classifier_info[1], classifier, MEAN, STD, classNames, mt_win, mt_step, st_win, st_step, compute_beat)
+			if (res[0] != -1):
+				res = res[2][int(res[0])]
+				if (res   == "true"):
+					print("DETECTED: knock")

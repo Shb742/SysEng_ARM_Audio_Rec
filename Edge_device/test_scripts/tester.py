@@ -1,5 +1,19 @@
 #!/usr/bin/env python3
-import wave,io,time#Temporary for testing putposes only
+#Imports
+import io,time
+import random
+import sys
+import audioop
+import math
+import os
+import wave
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))#add parent dir to path 
+path = os.path.dirname(os.path.abspath(__file__))
+os.chdir( path[:path[:-2].rfind("/")] )
+import rnnoise, process_audio
+#Imports*
+
+
 def encode_speech(data,sample_rate,name="fp"):
 	#globals
 	global channels
@@ -13,7 +27,6 @@ def encode_speech(data,sample_rate,name="fp"):
 	wf.writeframes(data)
 	wf.close()
 
-import audioop
 class WaveReader(object):
 	def __init__(self, obj):
 		self.obj = obj
@@ -38,7 +51,6 @@ class WaveReader(object):
 	def close(self):
 		self.obj.close()
 
-import math
 def getVolume(samples):
 	num_samples = int(len(samples)/1024)
 	values = [math.sqrt(abs(audioop.avg(samples[1024*x:1024*(x+1)], 2))) for x in range(num_samples)]
@@ -61,7 +73,6 @@ def adjustVolume(fragment,new_vol):
 	#print(" new vol :"+str(vol))
 	return fragment
 
-import os
 def getWavs(dirName):
 	listOfFiles = os.listdir(dirName)
 	wavs = []
@@ -73,10 +84,7 @@ def getWavs(dirName):
 			wavs.append(fullPath)  
 	return wavs
 
-import random
-import wave
-import rnnoise, process_audio
-import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 input_sample_rate = 48000#Do not change as rnnoise requires sample rate of 48K
@@ -227,6 +235,8 @@ def test(x=None):
 		print(e)
 	except KeyboardInterrupt:
 		print("probably ctrl-c")
+	except :
+		pass
 
 	total_count = false_positive_count+true_negative_count+false_negative_count+true_positive_count
 	print("true positives : - "+str(true_positive_count))
