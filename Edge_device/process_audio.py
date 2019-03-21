@@ -56,7 +56,6 @@ def init_classifier():
 
 def decode_audio(data):
 	global decoder
-	#data = b''.join(data)
 	buf = data[:1024]
 	data = data[1024:]
 	decoder.start_utt()
