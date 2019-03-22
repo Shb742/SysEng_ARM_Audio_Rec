@@ -24,6 +24,7 @@ var table;
 var alertList = [""];
 const maxAlerts = 100;
 var alertPage = (document.getElementById('alertTable') != null);
+let barGraphData = [0, 0, 0, 0, 0, 0];
 
 // Setting page appearances
 $('#accordionSidebar').load('element_sidebar.html');
@@ -76,7 +77,7 @@ function playAudio(elem) {
             })
             .fail(function (err) {
                 alert(err.responseText);
-                window.location.replace("/login.html");
+                window.location.replace("/login");
             });
 
     }
@@ -92,30 +93,117 @@ function updateAlerts(first_update) {
             alertList = [...json];
             while (json.length > 0) {
                 var item = json.pop();
-                if (alertPage){
+                now = new Date(Date.now());
+                thisweekstart = new Date(now);
+                thisweekstart.setDate(thisweekstart.getDate() - thisweekstart.getDay());
+                thisweekstart.setMilliseconds(0);
+                thisweekstart.setSeconds(0);
+                thisweekstart.setMinutes(0);
+                thisweekstart.setHours(0);
+                createdat = new Date(item["createdAt"]);
+                if (createdat.getFullYear() * 12 + createdat.getMonth() === now.getFullYear() * 12 + now.getMonth() - 1) {
+                    barGraphData[0]++;
+                }
+                if (createdat.getFullYear() * 12 + createdat.getMonth() === now.getFullYear() * 12 + now.getMonth()) {
+                    barGraphData[1]++;
+                }
+                if (createdat < thisweekstart && createdat > thisweekstart - 604800000) {
+                    barGraphData[2]++;
+                }
+                if (createdat > thisweekstart) {
+                    barGraphData[3]++;
+                }
+                if (createdat > thisweekstart && (createdat.getDate() === (now.getDate() - 1))) {
+                    barGraphData[4]++;
+                }
+                if (createdat > thisweekstart && (createdat.getDate() === now.getDate())) {
+                    barGraphData[5]++;
+                }
+
+
+                if (alertPage) {
                     if (start) {
                         table.row.add([item["_id"],
                             "<pre>" + escapeHtml(item["content"]) + "</pre>",
                             "<p viewed='" + escapeHtml(item["viewed"]) + "'>" + escapeHtml(item["location"]) + "</p>",
                             new Date(item["createdAt"]),
                             "<a style='font-size: 100%;cursor: pointer;' idd='" + item["_id"] + "' class='fa fa-play' onclick='playAudio(this)'></a>"]);
-                    }else if(item["_id"] == latest){
+                    } else if (item["_id"] == latest) {
                         start = true;
                     }
-                }else{
-                    if (!item["viewed"]){
+                } else {
+                    if (!item["viewed"]) {
                         document.getElementById('alertsSidebarButton').style.color = 'tomato';
                         document.getElementById('alertsSidebarButton').classList.add('blink');
-                    }  
+                    }
                 }
             }
-            if (alertPage){
+            if (alertPage) {
                 table.draw();
+            }
+
+            if (window.location.pathname === "/") {
+                var ctx = document.getElementById('myAreaChart').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Last month', 'This month', 'Last week', 'This week', 'Yesterday', 'Today'],
+                        datasets: [{
+                            label: '# of Alerts',
+                            data: [barGraphData[0], barGraphData[1], barGraphData[2], barGraphData[3], barGraphData[4], barGraphData[5]],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    }
+                });
+                var ctx2 = document.getElementById('myDonutChart').getContext('2d');
+                var myDoughnutChart = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Last month', 'This month', 'Last week', 'This week', 'Yesterday', 'Today'],
+                        datasets: [{
+                            label: '# of Alerts',
+                            data: [barGraphData[0], barGraphData[1], barGraphData[2], barGraphData[3], barGraphData[4], barGraphData[5]],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)',
+                                'rgba(255, 159, 64, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    }
+                });
             }
         })
         .fail(function (err) {
             alert(err.responseText);
-            window.location.replace("/login.html");
+            window.location.replace("/login");
         });
 
 }
@@ -217,7 +305,7 @@ function updateUserTable() {
         .done((list) => {
             while (list.length > 0) {
                 let item = list.pop();
-                if (item["authlevel"] != 1){
+                if (item["authlevel"] != 1) {
                     userTable.row.add([
                         item['_id'],
                         item["username"],

@@ -1,6 +1,6 @@
 <script src="js/sb-admin-2.min.js"></script>
 <script>
-    function logout(){
+    function logout() {
         var newXhr = $.getJSON("/logout")
             .done(function (json) {
                 window.location.replace("/login");
@@ -9,6 +9,7 @@
                 window.location.replace("/login");
             });
     }
+
     switch (window.location.pathname) {
         case ('/'):
             document.getElementById('homeSidebarButton').classList.add('active');
@@ -25,6 +26,7 @@
         default:
             break;
     }
+
     $.getJSON('/ping').done((json) => {
         document.getElementById('logInSidebarButton').style.display = 'none';
         document.getElementById('logOutSidebarButton').style.display = 'initial';
@@ -32,6 +34,7 @@
         document.getElementById('logInSidebarButton').style.display = 'initial';
         document.getElementById('logOutSidebarButton').style.display = 'none';
         document.getElementById('sideBarPageButtons').style.display = 'none';
+        window.location.replace('/login');
         //if (document.getElementById('404') == null) window.location.replace('/login');
     });
 </script>
@@ -92,7 +95,7 @@
         </a>
     </li>
 
-    <!--<hr class="sidebar-divider">
+    <hr class="sidebar-divider">
 
     <div class="sidebar-heading">More</div>
 
@@ -101,7 +104,7 @@
             <i class="fas fa-fw fa-cog"></i>
             <span>Settings</span>
         </a>
-    </li>-->
+    </li>
 
     <!--<li class="nav-item" id="toolsSidebarButton">
         <a class="nav-link" href="tools.html">

@@ -25,4 +25,4 @@ exports.checkAuth = (req, res, next) => {
 	}else{
 		res.redirect('/login');
 	}
-}
+};

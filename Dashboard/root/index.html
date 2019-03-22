@@ -120,55 +120,47 @@
 
                 </div>
 
-                <!-- Content Row -->
                 <div class="row">
 
-                    <div class="col-12 col-lg-6 mb-4">
+                    <div class="col-xl-8 col-lg-7">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Alert analysis</h6>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="myAreaChart" style="display: block; height: 320px; width: 782px;"
+                                            class="chartjs-render-monitor"></canvas>
 
-                        <div class="card shadow">
-                            <!-- Card Header - Accordion -->
-                            <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse"
-                               role="button" aria-expanded="true" aria-controls="collapseCardExample">
-                                <h6 class="m-0 font-weight-bold text-primary">
-                                    Edit dictionary
-                                </h6>
-                            </a>
-                            <!-- Card Content - Collapse -->
-                            <div class="collapse show" id="collapseCardExample">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                <div class="card-body">
-                                    <p>In this section, you can edit the dictionary for voice recognition algorithm.
-                                        When you finish, <b>press the update button</b> to sync across devices.
-                                    </p>
-                                    <div class="form-group">
-                                        <label for="dictionaryForm">Current dictionary:</label>
-                                        <textarea class="form-control" id="dictionaryForm" rows="6"></textarea>
-                                    </div>
-                                    <button class="btn btn-primary btn-block" id="updateButton">
-                                        <i class="fas fa-upload fa-fw"></i>
-                                        <span class="text">Update dictionary</span>
-                                    </button>
-                                    <script>
-                                        window.addEventListener('load', () => {
-                                            $.getJSON('/api/dictionary').done((json) => {
-                                                $('#dictionaryForm').val(json[0]['content']);
-                                            });
-                                            $('#updateButton').click(() => {
-                                                $.post('/api/dictionary', {
-                                                    content: $('#dictionaryForm').val()
-                                                });
-                                            });
-                                        });
-                                    </script>
+                    <div class="col-xl-4 col-lg-5">
+                        <div class="card shadow mb-4">
+                            <!-- Card Header - Dropdown -->
+                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                <h6 class="m-0 font-weight-bold text-primary">Alert distribute</h6>
+                            </div>
+                            <!-- Card Body -->
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <canvas id="myDonutChart" style="display: block; height: 320px; width: 358px;"
+                                            class="chartjs-render-monitor"></canvas>
+
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
         <!-- Footer -->
-        <!--<footer class="sticky-footer bg-white" id="footer"></footer>-->
+        <footer class="sticky-footer bg-white" id="footer"></footer>
     </div>
 </div>
 
@@ -183,10 +175,16 @@
 <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 <script src="vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
+<script src="vendor/chart.js/Chart.min.js"></script>
 
 <!-- Custom JavaScript -->
 <script src="js/sb-admin-2.min.js"></script>
 <script src="js/edvs-dashboard.js"></script>
+
+<script>
+    window.onload = documentReady;
+
+</script>
 
 </body>
 

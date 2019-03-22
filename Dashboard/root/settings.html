@@ -41,85 +41,47 @@
 
                 <!-- Content Row -->
                 <div class="row">
+                    <div class="col-12 col-lg-6 mb-4">
 
-                    <!-- Total alerts -->
-                    <div class="col-4 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                            Total alerts
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="alertCount"></div>
-                                        <script>
-                                            window.addEventListener('load', () => {
-                                                $.getJSON('/api/alerts/count').done((json) => {
-                                                    document.getElementById('alertCount').innerText = json['TotalAlerts'];
+                        <div class="card shadow">
+                            <!-- Card Header - Accordion -->
+                            <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse"
+                               role="button" aria-expanded="true" aria-controls="collapseCardExample">
+                                <h6 class="m-0 font-weight-bold text-primary">
+                                    Edit dictionary
+                                </h6>
+                            </a>
+                            <!-- Card Content - Collapse -->
+                            <div class="collapse show" id="collapseCardExample">
+
+                                <div class="card-body">
+                                    <p>In this section, you can edit the dictionary for voice recognition algorithm.
+                                        When you finish, <b>press the update button</b> to sync across devices.
+                                    </p>
+                                    <div class="form-group">
+                                        <label for="dictionaryForm">Current dictionary:</label>
+                                        <textarea class="form-control" id="dictionaryForm" rows="6"></textarea>
+                                    </div>
+                                    <button class="btn btn-primary btn-block" id="updateButton">
+                                        <i class="fas fa-upload fa-fw"></i>
+                                        <span class="text">Update dictionary</span>
+                                    </button>
+                                    <script>
+                                        window.addEventListener('load', () => {
+                                            $.getJSON('/api/dictionary').done((json) => {
+                                                $('#dictionaryForm').val(json[0]['content']);
+                                            });
+                                            $('#updateButton').click(() => {
+                                                $.post('/api/dictionary', {
+                                                    content: $('#dictionaryForm').val()
                                                 });
                                             });
-                                        </script>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-bell fa-2x text-gray-300"></i>
-                                    </div>
+                                        });
+                                    </script>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Total users -->
-                    <div class="col-4 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Total users
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="userCount"></div>
-                                        <script>
-                                            window.addEventListener('load', () => {
-                                                $.getJSON('/countusers').done((json) => {
-                                                    document.getElementById('userCount').innerText = json['TotalUsers'];
-                                                });
-                                            });
-                                        </script>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-users fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Total devices -->
-                    <div class="col-4 mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Total devices
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800" id="deviceCount"></div>
-                                        <script>
-                                            window.addEventListener('load', () => {
-                                                $.getJSON('/countdevices').done((json) => {
-                                                    document.getElementById('deviceCount').innerText = json['TotalDevices'];
-                                                });
-                                            });
-                                        </script>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-tablet fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
                 
 
