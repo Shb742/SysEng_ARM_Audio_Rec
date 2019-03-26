@@ -71,20 +71,17 @@
         if ((admin_token != "") && (username != "") &&(password != "") && (authlevel != "")){
             var xhr = new XMLHttpRequest();
             xhr.onload = function () {
-              resp = JSON.parse(xhr.responseText);
-              if (resp["session_token"]){
-                alert("Success, user:"+username+" created");
-            }else{
-                alert(xhr.responseText);
-                
-            }
-              
+                resp = JSON.parse(xhr.responseText);
+                if (resp["session_token"]){
+                    alert("Success, user:"+username+" created");
+                }else{
+                    alert(xhr.responseText);
+                }
             };
             xhr.open("POST", "/signup?token="+encodeURIComponent(admin_token), true);
             data = {"username":username, "password":password, "authlevel" : authlevel};
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send(JSON.stringify(data));
-
         }else{
             alert("Please fill out the sign up form");
         }
