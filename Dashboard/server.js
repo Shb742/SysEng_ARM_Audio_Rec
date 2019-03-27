@@ -69,10 +69,6 @@ require('./app/routes/user.routes')(app);
 require('./app/routes/dictionary.routes')(app);
 
 
-// Define a local variable within Express app instance for dictionary
-app.locals.dictionary = process.env.DASHBOARD_DICTIONARY;
-
-
 // Creates HTTP and HTTPS server
 http.createServer(app).listen(process.env.DASHBOARD_HTTP_PORT, () => {
     console.log(`HTTP server is listening on port ${process.env.DASHBOARD_HTTP_PORT || 80}.`);
