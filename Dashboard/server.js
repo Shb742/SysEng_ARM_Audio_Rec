@@ -48,7 +48,9 @@ app.use(bodyParser.urlencoded({extended: true, limit: '15mb'}));
 app.use(bodyParser.json({limit: '15mb'}));
 
 // Serve static files in /root
-app.use(express.static('root'));
+app.use(express.static('root', {
+    extensions: ['html', 'htm']
+}));
 
 // Mount express-session middleware to track login sessions
 app.use(session({
@@ -65,7 +67,6 @@ app.use(session({
 require('./app/routes/alert.routes')(app);
 require('./app/routes/user.routes')(app);
 require('./app/routes/dictionary.routes')(app);
-require('./app/routes/static.routes')(app);
 
 
 // Define a local variable within Express app instance for dictionary
