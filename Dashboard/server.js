@@ -1,7 +1,6 @@
 /**
  * Import necessary modules
  */
-const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const express = require('express');
 const fs = require('fs');
@@ -34,22 +33,36 @@ mongoose.connect(process.env.DASHBOARD_DATABASE_URL, {
 // Create an Express app
 const app = express();
 
-// Redirect HTTP request to HTTPS
+// Use Helmet to secure all response headers
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"]
+        }
+    },
+    hsts: false
+}));
+
+// Redirect all HTTP requests to HTTPS
+// (Placed after app.use helmet() because the initial 301 response header might expose weakness.)
 app.use((req, res, next) => {
     if (req.secure) next();
     else res.redirect(301, `https://${req.headers.host}${req.url}`);
 });
 
-// Use Helmet to secure response headers
-app.use(helmet());
-
-// Parse requests for application/x-www-form-urlencoded and application/json
-app.use(bodyParser.urlencoded({extended: true, limit: '15mb'}));
-app.use(bodyParser.json({limit: '15mb'}));
+// Parse requests for urlencoded and json
+app.use(express.urlencoded({
+    extended: true,
+    limit: '15mb'
+}));
+app.use(express.json({
+    limit: '15mb'
+}));
 
 // Serve static files in /root
 app.use(express.static('root', {
-    extensions: ['html', 'htm']
+    extensions: ['html', 'htm'],
+    lastModified: false
 }));
 
 // Mount express-session middleware to track login sessions
