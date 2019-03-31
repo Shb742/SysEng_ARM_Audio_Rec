@@ -35,11 +35,6 @@ const app = express();
 
 // Use Helmet to secure all response headers
 app.use(helmet({
-    contentSecurityPolicy: {
-        directives: {
-            defaultSrc: ["'self'"]
-        }
-    },
     hsts: false
 }));
 
