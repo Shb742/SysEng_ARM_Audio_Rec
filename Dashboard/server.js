@@ -9,6 +9,7 @@ const http = require('http');
 const https = require('https');
 const mongoose = require('mongoose');
 const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
 
 // Load .env file. Throws error if it is not present
 const dotenvResult = dotenv.config();
@@ -67,6 +68,9 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: parseInt(process.env.DASHBOARD_SESSION_COOKIE_MAXAGE),
+        store: new MemoryStore({
+            checkPeriod: 86400000
+        }),
         secure: true
     }
 }));

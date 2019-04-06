@@ -1,6 +1,6 @@
 {
   "name": "edvs-dashboard",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "UCL COMP0016 ARM/GOSH Project Dashboard",
   "main": "server.js",
   "scripts": {
@@ -39,7 +39,8 @@
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "helmet": "^3.16.0",
+    "memorystore": "^1.6.1",
     "mongo-sanitize": "^1.0.1",
-    "mongoose": "^5.4.20"
+    "mongoose": "^5.4.22"
   }
 }
