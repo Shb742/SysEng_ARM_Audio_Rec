@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+
+const argv = process.argv.slice(2);
+const version = require('../package.json').version;
+
+/*console.log(`The version is ${version}.`);
+
+process.argv.forEach((val, index) => {
+    console.log(`${index}: ${val}`);
+});*/
+
+function main() {
+    if (!argv.length) return help();
+    while (argv.length) {
+        const arg = argv.shift();
+        switch (arg) {
+            case '-h':
+            case '--help':
+            case '-?':
+            case '/?':
+            case 'help':
+                return help();
+            default:
+                console.log('Invalid argument. Use ');
+                break;
+        }
+    }
+}
+
+function help() {
+    console.log([`EDVS Dashboard ${version}`,
+        '',
+        'A server for managing vocal signal alerts.',
+        'This CLI(Command-line Interface) helps you manage the Dashboard.',
+        '',
+        'Usage: edvs-dashboard [OPTION]',
+        '',
+        'Options:',
+        'nothin\' yet lol',
+        ''].join('\n'));
+}
+
+main();

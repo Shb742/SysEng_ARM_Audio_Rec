@@ -32,6 +32,9 @@
   "bugs": {
     "url": "https://github.com/Shb742/SysEng_ARM_Audio_Rec/issues"
   },
+  "bin": {
+    "edvs-dashboard": "./bin/edvs-dashboard"
+  },
   "homepage": "https://github.com/Shb742/SysEng_ARM_Audio_Rec#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",

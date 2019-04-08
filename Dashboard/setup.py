@@ -21,8 +21,7 @@ if sys.platform != "linux":
 
 # Install required software
 print("Installing Node.js and NPM...")
-subprocess.run(["sudo", "apt", "update"])
-subprocess.run(["sudo", "apt", "install", "-y", "nodejs", "npm"])
+subprocess.run(["sudo", "./devinstall.sh"])
 subprocess.run(["sudo", "npm", "install"])
 
 # Setup MongoDB
