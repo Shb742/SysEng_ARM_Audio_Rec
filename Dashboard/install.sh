@@ -31,10 +31,6 @@ case $1 in
         ./install-nodejs.sh
         ./install-mongodb.sh
         ;;
-    *)
-        echo "Invalid argument."
-        exit 1
-        ;;
 esac
 
 echo ""
@@ -59,7 +55,7 @@ if which node > /dev/null ; then
             echo "    sudo apt-get install -y nodejs"
             echo ""
             echo "or by running \"./install-nodejs.sh\"."
-            echo "or by re-running this script with \"-all\" argument to install them first."
+            echo "or by re-running this script with \"--all\" argument to install them first."
             echo ""
             echo "Please install a newer version of Node.js and re-run this script."
             echo "The installer will now exit."
@@ -73,7 +69,7 @@ if which node > /dev/null ; then
         echo "    sudo apt-get install -y nodejs"
         echo ""
         echo "or by running \"./install-nodejs.sh\"."
-        echo "or by re-running this script with \"-all\" argument to install them first."
+        echo "or by re-running this script with \"--all\" argument to install them first."
         echo ""
         echo "Please install a compatible Node.js and re-run this script."
         echo "The installer will now exit."
@@ -99,7 +95,7 @@ while true; do
             echo "    sudo service mongod start"
             echo ""
             echo "or by running \"./install-mongodb.sh\"."
-            echo "or by re-running this script with \"-all\" argument to install them first."
+            echo "or by re-running this script with \"--all\" argument to install them first."
             echo "Please re-run this script after installation."
             echo "The installer will now exit."
             exit 1
@@ -119,4 +115,4 @@ done
 ./bin/edvs-dashboard set DASHBOARD_DATABASE_URL="$MONGODB_URI"
 
 # Install node_modules
-npm install -g
+sudo npm install -g
