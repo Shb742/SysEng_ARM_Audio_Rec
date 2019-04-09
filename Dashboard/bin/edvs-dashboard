@@ -1,43 +1,139 @@
 #!/usr/bin/env node
 
-const argv = process.argv.slice(2);
+const crypto = require('crypto');
+const fs = require('fs');
 const version = require('../package.json').version;
 
-/*console.log(`The version is ${version}.`);
+const argv = process.argv.slice(2);
 
-process.argv.forEach((val, index) => {
+//
+
+/*process.argv.forEach((val, index) => {
     console.log(`${index}: ${val}`);
 });*/
 
 function main() {
-    if (!argv.length) return help();
+    if (!argv.length) return printHelp();
     while (argv.length) {
         const arg = argv.shift();
         switch (arg) {
+            case 'set':
+                if (argv.length && argv[0].includes('=')) {
+                    const change = argv.shift().split('=', 2);
+                    return modifyDotEnv(change[0], change[1]);
+                } else {
+                    console.log('Invalid argument.');
+                    printHelp(1);
+                }
+                break;
+            case 'repair':
+                console.log('Repairing...');
+                verifyDotEnv();
+                break;
+            case 'start':
+                require(`${__dirname}/../server.js`);
+                break;
+            case '-v':
+            case 'version':
+                console.log(`v${version}`);
+                break;
             case '-h':
             case '--help':
             case '-?':
             case '/?':
             case 'help':
-                return help();
+                return printHelp();
             default:
-                console.log('Invalid argument. Use ');
-                break;
+                console.log('Invalid argument.');
+                return printHelp(1);
         }
     }
 }
 
-function help() {
-    console.log([`EDVS Dashboard ${version}`,
+function printHelp(isInvalid) {
+    if (!isInvalid) console.log([`EDVS Dashboard ${version}`,
         '',
         'A server for managing vocal signal alerts.',
         'This CLI(Command-line Interface) helps you manage the Dashboard.',
-        '',
-        'Usage: edvs-dashboard [OPTION]',
+        ''].join('\n'));
+    console.log(['Usage: edvs-dashboard [OPTION]',
         '',
         'Options:',
         'nothin\' yet lol',
         ''].join('\n'));
+}
+
+function verifyDotEnv() {
+    if (fs.existsSync(`${__dirname}/../.env`)) {
+        console.log('.env exists.');
+        return 0;
+    } else {
+        console.log('.env does not exist. A default one will be created.');
+        fs.writeFile(`${__dirname}/../.env`, `# EDVS Dashboard parameter settings
+
+# HOW TO USE THIS FILE
+#
+# env.example contains example values for Dashboard settings. You MUST either
+# rename this file to '.env' or make a duplicate of this file and name it '.env'
+# for it to be used as a configuration file. If you do not, it WILL NOT be
+# automatically read by the Dashboard.
+
+# This environment variable makes sure Node.js is running in production mode
+# instead of development mode, which can improve Express app performance.
+NODE_ENV=production
+
+# DO YOUR EDITS BELOW THIS POINT
+
+# Edit this variable to set the location for your Node.js server.
+DASHBOARD_URL=https://localhost
+
+# Edit this variable to set the port for HTTP server.
+DASHBOARD_HTTP_PORT=80
+
+# Edit this variable to set the port for HTTPS server.
+DASHBOARD_HTTPS_PORT=443
+
+# Edit this variable to set the path to TLS/SSL server private key.
+DASHBOARD_TLS_PRIVATE_KEY=security/keys/ssl-key.pem
+
+# Edit this variable to set the path to TLS/SSL server certificate.
+DASHBOARD_TLS_CERTIFICATE=security/certs/ssl-cert.pem
+
+# Edit this variable to set the location for your MongoDB server.
+DASHBOARD_DATABASE_URL=mongodb://localhost:27017/dashboard
+
+
+DASHBOARD_ADMIN_TOKEN=DEFAULT@Admin123ToKen0qekksd2
+
+# This is the secret used to sign the session ID cookie. This can be either a
+# string for a single secret, or an array of multiple secrets. If an array of
+# secrets is provided, only the first element will be used to sign the session
+# ID cookie, while all the elements will be considered when verifying the
+# signature in requests.
+DASHBOARD_SESSION_SECRET=${crypto.randomBytes(8).toString('hex')}
+
+# Specifies the time, in milliseconds, for each session before they expire.
+DASHBOARD_SESSION_COOKIE_MAXAGE=3600000
+`, (err) => {
+            if (err) return console.log(err);
+            console.log('A default .env has been created.');
+        });
+        return 1;
+    }
+}
+
+function modifyDotEnv(setting, value) {
+    verifyDotEnv();
+    fs.readFile(`${__dirname}/../.env`, 'utf8', (err, data) => {
+        if (err) return console.log(err);
+        const target = new RegExp(new RegExp(setting).source + new RegExp(/.*(\r\n|\r|\n)/).source);
+        const modifiedDotEnvString = data.replace(target, setting + '=' + value + '\n');
+        if (modifiedDotEnvString === data) return console.log('.env unchanged.');
+        else fs.writeFile(`${__dirname}/../.env`, modifiedDotEnvString, (err) => {
+            if (err) throw err;
+            console.log('.env has been modified.')
+        });
+    });
 }
 
 main();
