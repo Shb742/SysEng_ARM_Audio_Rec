@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 - Gradually shifting towards complete offline deployment.
 
+## [1.5.0] - 2019-04-09
+### Changed
+- Added install.sh script. It detects whether Node.js and MongoDB has already been installed. Written in bash script and tested.
+- Moving out the modifying .env part to a CLI located in ./bin, when module is installed globally, this CLI can automatically be added to PATH.
+
 ## [1.4.0] - 2019-04-07
 ### Added
 - Changelog will be maintained from now on.
