@@ -25,6 +25,12 @@ if [ "$(uname)" != "Linux" ] ; then
     exit 1
 fi
 
+# If ran with -all argument, then install Node.js and MongoDB first.
+if "$1" = "-all" ; then
+./install-nodejs.sh
+./install-mongodb.sh
+fi
+
 echo ""
 echo "##############################"
 echo "#                            #"
@@ -47,6 +53,7 @@ if which node > /dev/null ; then
 			echo "    sudo apt-get install -y nodejs"
 			echo ""
 			echo "or by running \"./install-nodejs.sh\"."
+			echo "or by re-running this script with \"-all\" argument to install them first."
 			echo ""
 			echo "Please install a newer version of Node.js and re-run this script."
 			echo "The installer will now exit."
@@ -60,6 +67,7 @@ if which node > /dev/null ; then
 		echo "    sudo apt-get install -y nodejs"
         echo ""
 		echo "or by running \"./install-nodejs.sh\"."
+		echo "or by re-running this script with \"-all\" argument to install them first."
 		echo ""
 		echo "Please install a compatible Node.js and re-run this script."
 		echo "The installer will now exit."
@@ -84,7 +92,8 @@ while true; do
 			echo "    sudo apt-get install -y mongodb-org"
 			echo "    sudo service mongod start"
 			echo ""
-			echo "or by simply running \"./install-mongodb.sh\"."
+			echo "or by running \"./install-mongodb.sh\"."
+			echo "or by re-running this script with \"-all\" argument to install them first."
 			echo "Please re-run this script after installation."
 			echo "The installer will now exit."
 			exit 1
