@@ -1,4 +1,0 @@
-SERVER_URL=https://localhost
-MONGODB_URI=mongodb://localhost:27017/dashboard
-ADMIN_TOKEN=DEFAULT@Admin123ToKen0qekksd2
-SESSION_SECRET=ExampleSecretOOOO.O-.-_-:):(:

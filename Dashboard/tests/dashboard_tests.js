@@ -1,4 +1,6 @@
 // get chai's assertation library
+
+
 const assert = require('chai').assert;
 var should = require('chai').should();
 var sinon = require('sinon');
@@ -51,27 +53,33 @@ describe('Replace characters', function(){
   });
 });
 
-// 
-// describe('check to see if the new alert gets added to the table', function(){
-//   it('Done', function(){
-//     var first_update = 0;
-//     var rows_length_before = dashboard.updateAlerts(first_update);
-//     //fake alert
-//     var rows_length_after = dashboard.updateAlerts(first_update);
-//     var difference = rows_length_after - rows_length_before;
-//     assert.equal(difference, 1);
-//
-//   });
-// });
+
+
+describe('check to see if the new alert gets added to the table', function(){
+  it('Done', function(){
+    var first_update = 3;
+    var rows_length_before = dashboard.updateAlerts(first_update);
+    console.log(rows_length_before);
+    var middle = dashboard.addARow(first_update);
+    console.log(middle);
+    var rows_length_after = dashboard.updateAlerts(first_update);
+    console.log(rows_length_after);
+    // var difference = rows_length_after - rows_length_before;
+    // assert.equal(difference, 1);
+
+  });
+});
 
 // describe('check to see if the new alert gets added to the table and old one is now the second alert', function(){
 //   it('Done', function(){
-//     //FAKE ALERT
+//     first_update= true;
+//     var middle = dashboard.addARow(first_update);
+//     console.log(middle);
 //     var rows = dashboard.checkForAlerts(first_update);
-//     var row0 = rows[0];
-//     var row1 = rows[1];
+//     // var row0 = rows[0];
+//     // var row1 = rows[1];
 //
-//     assert.equal(row1,row2);
+//     // assert.equal(row1,row2);
 //
 //   });
 // });
@@ -89,7 +97,7 @@ describe('does it wait 15 secs?', function(){
     var interval = false;
     setInterval(function () {
         interval = true;
-    }, 500);
+    }, 5000);
 
     interval.should.be.false;
     clock.tick(15501);

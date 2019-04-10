@@ -15,28 +15,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-// try {
-//     var tableRef = document.getElementById('alertTable').getElementsByTagName('tbody')[0];
+ const { JSDOM } = require('jsdom');
+ const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
+ const { window } = jsdom;
+ const $ = global.jQuery = require('jquery')(window);
+ const expect = require('chai').expect;
+//  try {
+//
+//     var tableRef = global.document.getElementById('alertTable').getElementsByTagName('tbody')[0];
+//
 // } catch (e) {
 // }
-//
-// var table;
-// var alertList = [""];
-// const maxAlerts = 100;
-// var alertPage = (document.getElementById('alertTable') != null);
+
+var table;
+var alertList = [""];
+
+const maxAlerts = 100;
+// var alertPage = (global.document.getElementById('Table') != null);
 
 // Setting page appearances
-// $('#accordionSidebar').load('element_sidebar.html');
-// $('#topBar').load('element_topbar.html');
-// $('#footer').load('element_footer.html');
-//
-// if ($(window).width() < 960) {
-//     $("body").toggleClass("sidebar-toggled");
-//     $(".sidebar").toggleClass("toggled");
-//     if ($(".sidebar").hasClass("toggled")) {
-//         $('.sidebar .collapse').collapse('hide');
-//     }
-// }
+$('#accordionSidebar').load('element_sidebar.html');
+$('#topBar').load('element_topbar.html');
+$('#footer').load('element_footer.html');
+
+if ($(window).width() < 960) {
+    $("body").toggleClass("sidebar-toggled");
+    $(".sidebar").toggleClass("toggled");
+    if ($(".sidebar").hasClass("toggled")) {
+        $('.sidebar .collapse').collapse('hide');
+    }
+}
 
 
 function escapeHtml(unsafe) {
@@ -82,12 +90,13 @@ function playAudio(elem) {
 }
 
 function updateAlerts(first_update) {
+
     var jqxhr = $.getJSON("/api/alerts/?file=none&limit=" + maxAlerts)
         .done(function (json) {
             var start = first_update;
-
             latest = alertList[0]["_id"];
             alertList = [...json];
+
             while (json.length > 0) {
                 var item = json.pop();
                 if (alertPage){
@@ -112,11 +121,13 @@ function updateAlerts(first_update) {
             }
         })
         .fail(function (err) {
-            alert(err.responseText);
-            window.location.replace("/login.html");
+            console.log(err.responseText);
+            // window.location.replace("/login.html");
         });
-
+        var x = $('alertTable').length;
+        return x;
 }
+
 //change this will not work when operating at alert limit (change to get newest alert and compare ids)
 function checkForAlerts(first_update) {
     if (first_update) {
@@ -154,6 +165,7 @@ function checkForAlerts(first_update) {
                 window.location.replace("/login");
             });
     }
+    return first_update;
 }
 
 function documentReady() {
@@ -232,6 +244,13 @@ function updateUserTable() {
 
 }
 
+function addARow(first_update){
+  $('alertTable').append('<tr>newEntry</tr>');
+  var x = $('alertTable').length;
+  return x;
+}
+
+
 module.exports= {
   escapeHtml: escapeHtml,
   playAudio: playAudio,
@@ -240,4 +259,5 @@ module.exports= {
   updateUserTable: updateUserTable,
   checkForAlerts: checkForAlerts,
   updateDeviceTable: updateDeviceTable,
+  addARow: addARow,
 };
