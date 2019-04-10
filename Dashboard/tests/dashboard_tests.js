@@ -5,14 +5,9 @@ const assert = require('chai').assert;
 var should = require('chai').should();
 var sinon = require('sinon');
 const nock = require('nock');
-const scope = nock('https://edvs.uk.to/')
-  .post('pages/login.html', 'username=kimia&password=123kimia321')
-  .reply(200, "Right Credentials")
-
 // load the software we are testing
 const dashboard = require('../dashboard');
 //create a test
-// const string  = '&';
 describe('Replace characters', function(){
   it('& -> amp', function(){
 
@@ -53,8 +48,6 @@ describe('Replace characters', function(){
   });
 });
 
-
-
 describe('check to see if the new alert gets added to the table', function(){
   it('Done', function(){
     var first_update = 3;
@@ -70,19 +63,45 @@ describe('check to see if the new alert gets added to the table', function(){
   });
 });
 
-// describe('check to see if the new alert gets added to the table and old one is now the second alert', function(){
-//   it('Done', function(){
-//     first_update= true;
-//     var middle = dashboard.addARow(first_update);
-//     console.log(middle);
-//     var rows = dashboard.checkForAlerts(first_update);
-//     // var row0 = rows[0];
-//     // var row1 = rows[1];
-//
-//     // assert.equal(row1,row2);
-//
-//   });
-// });
+describe('check to see if the new alert gets added to the table and old one is now the second alert', function(){
+  it('Done', function(){
+    first_update= true;
+    var middle = dashboard.addARow(first_update);
+    console.log(middle);
+    var rows = dashboard.checkForAlerts(first_update);
+    // var row0 = rows[0];
+    // var row1 = rows[1];
+
+    // assert.equal(row1,row2);
+
+  });
+});
+
+describe('when a new person logs in, ', function(){
+  it('Does the table of users change', function(){
+
+    var beforeLogin = dashboard.updateUserTable();
+    console.log(beforeLogin);
+    const scope = nock('https://edvs.uk.to/')
+      .post('pages/login.html', 'username=kimia&password=123kimia321')
+      .reply(200, "Right Credentials")
+    var afterLogin = dashboard.updateUserTable();
+    var difference = afterLogin - beforeLogin;
+    assert.equal(difference, 1);
+  });
+});
+
+describe('when a new device gets added, ', function(){
+  it('Does the table of devices change', function(){
+
+    var beforeAddingADevice = dashboard.updateDeviceTable();
+    console.log(beforeLogin);
+    dashboard.addADevice();
+    var afterAddingADevice = dashboard.updateUserTable();
+    var difference = afterAddingADevice - beforeAddingADevice;
+    assert.equal(difference, 1);
+  });
+});
 
 var clock;
 beforeEach(function () {
