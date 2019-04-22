@@ -1,4 +1,6 @@
 requests==2.9.1
 pocketsphinx==0.1.15
-PyAudio==0.2.11
 numpy==1.16.0 
+scipy==1.2.1
+matplotlib==3.0.2
+pydub==0.23.1
