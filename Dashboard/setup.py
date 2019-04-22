@@ -39,16 +39,18 @@ elif is_db_local == "n":
     mongodb_url = input("In that case, please enter the URL for the MongoDB server:")
 
 # Setup .env (environment variable) for Node.js server
+admin_token = bytes.hex(os.urandom(12))
 dotenv_example = open("env.example", "r")
 dotenv = ""
 for line in dotenv_example:
     if "DASHBOARD_DATABASE_URL" in line:
         line = "DASHBOARD_DATABASE_URL=" + mongodb_url + "\n"
     elif "DASHBOARD_SESSION_SECRET" in line:
-        line = "DASHBOARD_SESSION_SECRET=" \
-               + (input("Please set a password for signing session cookies"
-                        " (if left blank, a random secure one will be generated):") or bytes.hex(os.urandom(12))) \
-               + "\n"
+        line = "DASHBOARD_SESSION_SECRET=" + bytes.hex(os.urandom(12)) + "\n"
+    elif "DASHBOARD_ADMIN_TOKEN" in line:
+        line = "DASHBOARD_ADMIN_TOKEN=" + admin_token + "\n"
+     elif "ADMIN_TOKEN" in line:
+        line = "ADMIN_TOKEN=" + admin_token + "\n"
     dotenv = dotenv + line
 open(".env", "w").write(dotenv)
 
@@ -247,3 +249,4 @@ os.system("sudo chown root:root " + initdScriptLocation)
 os.system("sudo update-rc.d " + initdScriptLocation.split("/")[-1] + " defaults")
 os.system("sudo " + initdScriptLocation + " start")
 print("USAGE: sudo /etc/init.d/EdvsDashboard (start|stop|restart|status)")
+print("ADMIN_TOKEN=" + admin_token)
