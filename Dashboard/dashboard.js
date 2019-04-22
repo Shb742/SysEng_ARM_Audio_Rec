@@ -22,17 +22,19 @@
  const expect = require('chai').expect;
  try {
 
-    var tableRef = global.document.getElementById('alertTable').getElementsByTagName('tbody')[0];
+    var tableRef = global.document.getElementById('#alertTable').getElementsByTagName('tbody')[0];
 
-} catch (e) {
-}
+  } catch (e) {
+  }
 
 var table;
 var alertList = [""];
 
 const maxAlerts = 100;
-var alertPage = (global.document.getElementById('Table') != null);
-
+ try {
+var alertPage = (global.document.getElementById('#alertTable') != null);
+} catch (e) {
+}
 // Setting page appearances
 $('#accordionSidebar').load('element_sidebar.html');
 $('#topBar').load('element_topbar.html');
@@ -124,7 +126,7 @@ function updateAlerts(first_update) {
             console.log(err.responseText);
             // window.location.replace("/login.html");
         });
-        var x = $('alertTable').length;
+        var x = $('#alertTable').length;
         return x;
 }
 
@@ -216,7 +218,6 @@ function updateDeviceTable() {
 function updateUserTable() {
     // Still checks alerts in background
     documentReady();
-
     // Initialise a DataTable object
     let userTable = $('#userTable').DataTable({
         order: [[2, "desc"]]
@@ -250,8 +251,10 @@ function updateUserTable() {
 
 //For testing purposes ONLY
 function addARow(first_update){
-  $('alertTable').append('<tr>newEntry</tr>');
-  var x = $('alertTable').length;
+  $(global.document).ready(function(){
+  $('#alertTable').append('<tr>newEntry</tr>');
+})
+  var x = $('#alertTable').length;
   return x;
 }
 function addADevice(){

@@ -6,6 +6,8 @@ require('dotenv').config()//load .env files
 var https = require('https');
 var http = require('http');
 var fs = require('fs');
+var WebSocket = require('WebSocket');
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 //Imports*
 
 

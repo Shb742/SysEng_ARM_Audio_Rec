@@ -2,19 +2,21 @@
   "name": "edvs-dashboard",
   "version": "1.0.1",
   "description": "UCL COMP0016 ARM/GOSH Project Dashboard",
-  "main": "server.js",
+  "main": "automatedTests.js",
   "scripts": {
-    "test": "mocha --timeout 200000 tests/dashboard_tests.js",
-    "coverage": "istanbul cover _mocha tests/dashboard_tests.js",
-    "showcoverage": "open coverage/lcov-report/index.html"
+    "test": "mocha --timeout 200000 test.js"
   },
   "private": true,
   "devDependencies": {
+    "@types/chai-http": "^4.2.0",
     "chai": "^3.5.0",
     "istanbul": "^0.4.5",
-    "mocha": "^6.0.2",
+    "mocha": "^6.1.4",
     "mocha-sinon": "^2.1.0",
-    "selenium-webdriver": "^4.0.0-alpha.1"
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "websocket": "^1.0.28",
+    "ws": "^6.2.1",
+    "xmlhttprequest": "^1.8.0"
   },
   "repository": {
     "type": "git",
@@ -40,9 +42,11 @@
   },
   "homepage": "https://github.com/Shb742/SysEng_ARM_Audio_Rec#readme",
   "dependencies": {
+    "asserts": "^4.0.2",
     "bcrypt": "^3.0.4",
     "body-parser": "^1.18.3",
     "check-chai": "0.0.1",
+    "chromedriver": "^73.0.0",
     "dotenv": "^6.2.0",
     "expect": "^24.0.0",
     "express": "^4.16.4",
