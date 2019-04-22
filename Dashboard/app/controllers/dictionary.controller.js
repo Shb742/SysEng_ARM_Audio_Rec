@@ -25,7 +25,12 @@ exports.update = (req, res) => {
 exports.read = (req, res) => {
     Dictionary.find({}, null, {})
         .then(dict => {
-            console.log(dict);
+            if (dict === undefined || dict.length == 0){
+                Dictionary.findOneAndUpdate({}, {'content': 'help me /1e-21/\nhelp help /1e-25/\nsomeone help /1e-37/\nsomebody help /1e-30/\n'}, {upsert: true}, function (err, doc) {
+                    if (err) return res.send(500, {error: err});
+                });
+                return res.send([{'content': 'help me /1e-21/\nhelp help /1e-25/\nsomeone help /1e-37/\nsomebody help /1e-30/\n'}]);
+            }
             return res.send(dict);
         }).catch(err => {
         return res.status(500).send({
