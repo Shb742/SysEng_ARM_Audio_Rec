@@ -49,7 +49,7 @@ for line in dotenv_example:
         line = "DASHBOARD_SESSION_SECRET=" + bytes.hex(os.urandom(12)) + "\n"
     elif "DASHBOARD_ADMIN_TOKEN" in line:
         line = "DASHBOARD_ADMIN_TOKEN=" + admin_token + "\n"
-     elif "ADMIN_TOKEN" in line:
+    elif "ADMIN_TOKEN" in line:
         line = "ADMIN_TOKEN=" + admin_token + "\n"
     dotenv = dotenv + line
 open(".env", "w").write(dotenv)
