@@ -13,6 +13,7 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    location: String,
     authlevel: {
         type: Number,
         default: 2

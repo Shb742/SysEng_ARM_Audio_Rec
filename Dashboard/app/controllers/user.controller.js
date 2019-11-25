@@ -19,7 +19,8 @@ exports.signup = (req, res) => {
         var userData = {
             username: escape(req.body.username),
             password: req.body.password,
-            authlevel: req.body.authlevel
+            authlevel: req.body.authlevel,
+            location: req.body.location
         }
 
         User.create(userData, function (error, user) {
