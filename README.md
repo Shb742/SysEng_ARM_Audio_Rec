@@ -5,7 +5,7 @@ EDVS (Emergency Detection using Vocal Signals) is a system that is designed to g
 
  <img src="images/posterimg.png" width="70%"></img><br>
  
- <img src="images/posterimg.png" width="70%"></img><br>
+ <img src="images/ROC_PRC.png" width="70%"></img><br>
 
 
 ## Hardware
